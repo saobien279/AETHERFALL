@@ -1,0 +1,50 @@
+<roblox xmlns:xmime="http://www.w3.org/2005/05/xmlmime" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://www.roblox.com/roblox.xsd" version="4">
+	<Meta name="ExplicitAutoJoints">true</Meta>
+	<External>null</External>
+	<External>nil</External>
+	<Item class="Camera" referent="RBXD131A9BFDEF6493AB6F3CBCB5FDFAACA">
+		<Properties>
+			<CoordinateFrame name="CFrame">
+				<X>-33.1488228</X>
+				<Y>42.9652405</Y>
+				<Z>45.721489</Z>
+				<R00>0.882950187</R00>
+				<R01>0.279643089</R01>
+				<R02>-0.377092421</R02>
+				<R10>-0</R10>
+				<R11>0.803235769</R11>
+				<R12>0.595661223</R12>
+				<R20>0.469466686</R20>
+				<R21>-0.525939167</R21>
+				<R22>0.709217131</R22>
+			</CoordinateFrame>
+			<Ref name="CameraSubject">null</Ref>
+			<token name="CameraType">0</token>
+			<float name="FieldOfView">70</float>
+			<token name="FieldOfViewMode">0</token>
+			<CoordinateFrame name="Focus">
+				<X>-32.3946381</X>
+				<Y>41.7739182</Y>
+				<Z>44.3030548</Z>
+				<R00>1</R00>
+				<R01>0</R01>
+				<R02>0</R02>
+				<R10>0</R10>
+				<R11>1</R11>
+				<R12>0</R12>
+				<R20>0</R20>
+				<R21>0</R21>
+				<R22>1</R22>
+			</CoordinateFrame>
+			<bool name="HeadLocked">true</bool>
+			<float name="HeadScale">1</float>
+			<bool name="VRTiltAndRollEnabled">false</bool>
+			<BinaryString name="AttributesSerialize"></BinaryString>
+			<SecurityCapabilities name="Capabilities">0</SecurityCapabilities>
+			<bool name="DefinesCapabilities">false</bool>
+			<string name="Name">Camera</string>
+			<int64 name="SourceAssetId">-1</int64>
+			<BinaryString name="Tags"></BinaryString>
+		</Properties>
+	</Item>
+</roblox>

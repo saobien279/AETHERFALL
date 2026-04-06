@@ -1,0 +1,10 @@
+{
+  "className": "ProximityPrompt",
+  "properties": {
+    "ActionText": "Phá hủy",
+    "ObjectText": "Khối Ma Thuật",
+    "HoldDuration": 2,
+    "KeyboardKeyCode": "E",
+    "MaxActivationDistance": 5
+  }
+}

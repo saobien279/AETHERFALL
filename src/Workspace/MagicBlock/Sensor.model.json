@@ -1,0 +1,6 @@
+{
+  "className": "ClickDetector",
+  "properties": {
+    "MaxActivationDistance": 20 
+  }
+}

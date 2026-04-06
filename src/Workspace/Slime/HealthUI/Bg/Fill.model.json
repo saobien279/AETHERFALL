@@ -1,0 +1,9 @@
+{
+  "className": "Frame",
+  "properties": {
+    "Name": "Fill",
+    "Size": { "UDim2": [[1 , 0], [1, 0]] },
+    "BackgroundColor3": [0.2, 0.8, 0.2],
+    "BorderSizePixel": 0
+  }
+}

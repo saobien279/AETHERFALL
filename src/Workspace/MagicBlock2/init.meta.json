@@ -1,0 +1,10 @@
+{
+  "className": "Part",
+  "properties": {
+    "Size": [4, 4, 4],
+    "Position": [1, 2, 20],
+    "Anchored": true,
+    "Material": "SmoothPlastic",
+    "Color": [1, 1, 1]
+  }
+}

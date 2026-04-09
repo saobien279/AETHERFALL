@@ -21,15 +21,19 @@ For more help, check out [the Rojo documentation](https://rojo.space/docs).
 Tài liệu này giúp các Agent sau này hiểu cách làm việc với dự án này để đảm bảo tính đồng nhất.
 
 ## 1. Cấu trúc Dự án (Project Structure)
-Dự án sử dụng **Rojo** để đồng bộ hóa từ ổ cứng vào Roblox Studio. Mọi thứ được định nghĩa trong thư mục `src/`.
+Dự án sử dụng **Rojo** để đồng bộ hóa từ ổ cứng vào Roblox Studio. Mọi thứ được định nghĩa trong thư mục `src/`, tương ứng với các Service chính mà chúng ta code:
 
-- `src/ServerScriptService`: Chứa các Script (Server).
-- `src/StarterPlayer`: Chứa `StarterPlayerScripts` và `StarterCharacterScripts`.
-- `src/StarterGui`: Chứa các thành phần Giao diện (UI).
-- `src/ReplicatedStorage`: Chứa các ModuleScript và RemoteEvents dùng chung.
 - `src/Workspace`: Chứa các Part, Model vật lý.
+- `src/Players`: Quản lý người chơi.
+- `src/ReplicatedFirst`: Chứa các Script/Module chạy đầu tiên (thường là Loading Screen).
+- `src/ReplicatedStorage`: Chứa các ModuleScript và RemoteEvents dùng chung (Server & Client).
+- `src/ServerScriptService`: Chứa các Script chạy trên Server.
+- `src/ServerStorage`: Chứa các dữ liệu chỉ Server truy cập được.
+- `src/StarterGui`: Chứa giao diện người dùng (UI).
+- `src/StarterPack`: Chứa công cụ (Tools) và vật phẩm khởi đầu.
+- `src/StarterPlayer`: Chứa `StarterPlayerScripts` và `StarterCharacterScripts`.
 
-**Lưu ý quan trọng:** Cấu trúc đã được refactor để map trực tiếp. Khi tạo một file trong `src/ServerScriptService/TenScript.server.luau`, nó sẽ xuất hiện trực tiếp trong `ServerScriptService` của Roblox mà không bị bọc bởi folder trung gian nào.
+**Lưu ý quan trọng:** Cấu trúc đã được tinh gọn để chỉ giữ lại các thư mục cần thiết cho việc lập trình.
 
 ## 2. Cách tạo Part bằng JSON (`.model.json`)
 Thay vì tạo Part trực tiếp trong Roblox, hãy tạo file `.model.json` trong `src/Workspace/`.

@@ -2,48 +2,41 @@
   "name": "Learning4Chang",
   "tree": {
     "$className": "DataModel",
-
-    "ReplicatedStorage": {
-      "$path": "src/ReplicatedStorage"
-    },
-
-    "ServerScriptService": {
-      "$path": "src/ServerScriptService"
-    },
-
-    "StarterPlayer": {
-      "StarterPlayerScripts": {
-        "$path": "src/StarterPlayerScripts"
-      },
-      "StarterCharacterScripts": {
-        "$path": "src/StarterCharacterScripts"
-      }
-    },
-
-    "StarterGui": {
-      "$path": "src/StarterGui"
-    },
-
     "Workspace": {
       "$path": "src/Workspace",
       "$properties": {
         "FilteringEnabled": true
       }
     },
-
-    "Lighting": {
-      "$properties": {
-        "Ambient": [0, 0, 0],
-        "Brightness": 2,
-        "GlobalShadows": true,
-        "Outlines": false,
-        "Technology": "Voxel"
-      }
+    "Players": {
+      "$path": "src/Players"
     },
-
-    "SoundService": {
-      "$properties": {
-        "RespectFilteringEnabled": true
+    "ReplicatedFirst": {
+      "$path": "src/ReplicatedFirst"
+    },
+    "ReplicatedStorage": {
+      "$path": "src/ReplicatedStorage"
+    },
+    "ServerScriptService": {
+      "$path": "src/ServerScriptService"
+    },
+    "ServerStorage": {
+      "$path": "src/ServerStorage"
+    },
+    "StarterGui": {
+      "$path": "src/StarterGui"
+    },
+    "StarterPack": {
+      "$path": "src/StarterPack"
+    },
+    "StarterPlayer": {
+      "StarterPlayerScripts": {
+        "$className": "StarterPlayerScripts",
+        "$path": "src/StarterPlayer/StarterPlayerScripts"
+      },
+      "StarterCharacterScripts": {
+        "$className": "StarterCharacterScripts",
+        "$path": "src/StarterPlayer/StarterCharacterScripts"
       }
     }
   }

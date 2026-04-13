@@ -5,7 +5,6 @@ local Workspace = game:GetService("Workspace")
 local MonsterClass = require(ReplicatedStorage.Modules.Monster)
 local AttackEvent = ReplicatedStorage:WaitForChild("Events").AttackEvent :: RemoteEvent
 local updateHUDEvent = ReplicatedStorage:WaitForChild("Events").updateHUDEvent :: RemoteEvent
-
 -- ==========================================
 -- 1. ĐỊNH NGHĨA MÁY TRẠNG THÁI (Bảng Liệt Kê)
 -- ==========================================
@@ -41,11 +40,27 @@ local function ChangeState(newState: string)
     if currentState == GameState.PLAYER_TURN then
         print("👉 Đến lượt Khang! (Đang chờ chọn kỹ năng...)")
         
+        local plr , act = AttackEvent.OnServerEvent:Wait()
+
+        Player = plr :: Player
+        local action = act :: string
+        print(action)
+
+        if action == "Attack" then
+            print("🗡️ Khang chém Slime!")
+            enemyBoss:TakeDamage(40) -- Gây 40 sát thương, thanh máu sẽ tự tụt!
+
+        elseif action == "Heal" then
+            print("🗡️ Khang hồi máu!")
+            CurrentHp = CurrentHp + 40 -- Gây 40 sát thương, thanh máu sẽ tự tụt!
+            if CurrentHp > playerHp then
+                CurrentHp = playerHp
+            end
+                updateHUDEvent:FireClient(Player, CurrentHp, playerHp)
+            end
+
         -- Dùng task.wait để GIẢ LẬP việc bạn tốn 2 giây để bấm nút tấn công
-        Player = AttackEvent.OnServerEvent:Wait()
         
-        print("🗡️ Khang chém Slime!")
-        enemyBoss:TakeDamage(40) -- Gây 40 sát thương, thanh máu sẽ tự tụt!
 
         -- Kẻ địch hết máu thì end game, nếu không thì tới lượt kẻ địch
         if enemyBoss.CurrentHp <= 0 then

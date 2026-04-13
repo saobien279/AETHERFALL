@@ -1,24 +1,9 @@
 {
-    "className": "Frame",
-    "properties": {
-        "Name": "Fill",
-        "BackgroundColor3": [
-            0,
-            0.6,
-            1
-        ],
-        "Size": {
-            "UDim2": [
-                [
-                    1,
-                    0
-                ],
-                [
-                    1,
-                    0
-                ]
-            ]
-        },
-        "BorderSizePixel": 0
-    }
+  "className": "Frame",
+  "properties": {
+    "Name": "Fill",
+    "BackgroundColor3": [0, 0.6, 1],
+    "Size": { "UDim2": [[1, 0], [1, 0]] },
+    "BorderSizePixel": 0
+  }
 }

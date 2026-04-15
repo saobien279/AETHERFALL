@@ -106,4 +106,40 @@ function StatsCalculator.calculateFinalDamage(incomingDamage: number, defenderDe
 	return math.round(finalDamage)
 end
 
+--chua done
+function StatsCalculator.GetTotalStats(playerData, RaceRegistry)
+	local finalStats = {}
+	local raceName = playerData.Race
+	local raceData = RaceRegistry[raceName]
+
+	local statNames = {"STR", "ARC", "END", "SPD", "LCK"}
+
+	for _, stat in ipairs(statNames) do
+		local invested = playerData.Stats[stat] or 0
+
+		local base = raceData.BaseStats[stat] or 0
+		
+		local multiplier = 1
+        for passiveName, passiveEffect in pairs(raceData.Passives) do
+		-- 1. Kiểm tra buff toàn diện cho mọi chỉ số (như AllRounder)
+		if passiveEffect.StatMultiplier then
+			multiplier = multiplier * passiveEffect.StatMultiplier
+		end
+		
+		-- 2. Kiểm tra buff riêng cho từng chỉ số cụ thể
+		-- Ví dụ: Nếu đang tính "SPD", chúng ta tìm "SpeedMultiplier"
+		-- Chúng ta cần một bảng ánh xạ nhỏ: STR -> Strength, SPD -> Speed...
+		local fullStatName = (stat == "SPD" and "Speed") or (stat == "STR" and "Strength") or stat -- Tạm thời như vậy
+		local specificKey = fullStatName .. "Multiplier" 
+		
+		if passiveEffect[specificKey] then
+			multiplier = multiplier * passiveEffect[specificKey]
+		end
+	end
+
+		finalStats[stat] = (base + invested) * multiplier
+	end
+	
+	return finalStats
+end
 return StatsCalculator

@@ -191,3 +191,11 @@ profile:EndSession()
 | `Profile.OnSave` | Trước mỗi lần save |
 | `Profile.OnSessionEnd` | Khi session bị kết thúc |
 | `Profile.OnLastSave` | Lần save cuối cùng (lý do: "Manual" / "Shutdown" / "External") |
+
+---
+
+## 10. Current Work In Progress (Session Memos)
+
+- **Công việc hiện tại**: Đang tích hợp hàm `GetTotalStats` bên trong module `StatsCalculator`.
+- **Ngữ cảnh**: Hàm đang kết hợp lấy dữ liệu `playerData.Stats` và `raceData.BaseStats` (từ `RaceRegistry`), sau đó áp dụng hệ số nhân từ `raceData.Passives`. Hệ thống đang xử lý việc ánh xạ từ chữ viết tắt của chỉ số (vd: "SPD") sang tên đầy đủ (vd: "Speed") để gọi đúng các multiplier cụ thể (vd: "SpeedMultiplier"). 
+- **Lưu ý cho Agent**: Đoạn code được người dùng chủ ý để dang dở. **Tuyệt đối không tự ý hoàn thành hay sửa đổi code** nếu không được người dùng yêu cầu rõ ràng. Đọc lưu ý này khi bắt đầu session để biết mạch làm việc.

@@ -144,4 +144,25 @@
 
     ## 9. Current Work In Progress (Session Memos)
 
-    - **Hệ thống Stats**: Đang xử lý hàm `StatsCalculator.GetTotalStats`. Logic đang tập trung tính tổng số liệu bằng cách cộng `BaseStats` của nhân vật theo `Race` từ `RaceRegistry` và chỉ số người chơi tự nâng (`invested` point). Đồng thời, đang thiết kế cách áp dụng `Passives` (nội tại tộc), bao gồm buff cho toàn bộ chỉ số (`StatMultiplier` từ `AllRounder`) và buff cho từng chỉ số cụ thể (như `SpeedMultiplier`, `StrengthMultiplier`). *Lưu ý: Đoạn code này đang dở dang (chưa done), không tự ý sửa đổi nếu không có yêu cầu.*
+    *(Hiện tại chưa có)*
+
+    ---
+
+    ## 10. Danh mục UI, Model & Event (Lưu trực tiếp trong Roblox)
+
+    > Các đối tượng dưới đây được xây dựng và chỉnh sửa trực tiếp bên trong Roblox Studio. Bảng dưới đây cung cấp chính xác cấu trúc Cây Hierarchy (Cha-Con) theo thực tế để AI Agent gọi bằng code (VD: `WaitForChild()`).
+
+    ### 10.1. Hệ thống Giao diện (UI) - Nằm trong `StarterGui` (hoặc `PlayerGui`)
+    *(Chưa có thông tin - Đang chờ người dùng cung cấp)*
+
+    ### 10.2. Hệ thống Model & Part - Nằm trong `Workspace`
+    *(Chưa có thông tin - Đang chờ người dùng cung cấp)*
+
+    ### 10.3. Hệ thống Events - Nằm trong `ReplicatedStorage`
+
+    **📡 `ReplicatedStorage`**:
+    - ↳ **`Events`** (Folder) - Thư mục chứa tất cả RemoteEvent dùng cho Client-Server Communication.
+      - ↳ `ActionHandle` (RemoteEvent) - Xử lý thông tin khi click vào các nút hành động (Đang chờ Rework).
+      - ↳ `CombatEvents` (RemoteEvent) - Quản lý các event khác liên quan đến cơ chế Turn-based.
+
+    *(Lưu ý của User: Các Agent KHÔNG ĐƯỢC đọc code cũ trong `TurnbaseCore.server.luau` hoặc các Remote Event liên quan trực tiếp đến `ActionMenu` hay `ActionHandle` theo yêu cầu của User trong đợt rework tiếp theo).*

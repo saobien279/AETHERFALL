@@ -1,8 +1,0 @@
-{
-  "className": "BillboardGui",
-  "properties": {
-    "Size": { "UDim2": [[0, 100], [0, 20]] },
-    "StudsOffset": [0, 3, 0],
-    "AlwaysOnTop": true
-  }
-}

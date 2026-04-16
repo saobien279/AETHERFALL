@@ -49,50 +49,18 @@ Dự án dùng **Rojo** để sync từ ổ cứng vào Roblox Studio. Mọi cod
 
 ---
 
-## 4. Tạo Part bằng `.model.json`
+## 4. Quản lý Mô hình (Models & Parts)
 
-Thay vì tạo Part trực tiếp trong Studio, tạo file `.model.json` trong `src/Workspace/`.
-
-```json
-{
-  "ClassName": "Part",
-  "Properties": {
-    "Anchored": true,
-    "Color": [1, 0, 0],
-    "Position": [0, 5, 0],
-    "Size": [4, 4, 4]
-  }
-}
-```
-
-> ⚠️ **Không đặt trường `"Name"` bên trong `"Properties"`** — Rojo sẽ crash. Tên Instance lấy từ tên file.
+> **CẬP NHẬT MỚI**: Dự án hiện tại lưu các Model và Part vật lý **trực tiếp trong file Roblox (Roblox Studio)**, thay vì sử dụng các file `.model.json` qua Rojo.
+- Các Agent AI khi code cần tương tác với Part/Model phải tra cứu tên, vị trí và cấu trúc của chúng trong file `aboutproject.md`.
 
 ---
 
-## 5. Tạo UI bằng `.meta.json`
+## 5. Quản lý Giao diện (UI)
 
-Để tạo một UI element (ScreenGui, Frame, TextButton...), tạo thư mục + file `init.meta.json`:
-
-**Ví dụ: Tạo TextButton tên `MyButton`**
-
-```
-src/StarterGui/MyButton/
-├── init.meta.json      ← định nghĩa ClassName
-└── logic.client.luau   ← logic xử lý sự kiện
-```
-
-```json
-// init.meta.json
-{
-  "className": "TextButton",
-  "properties": {
-    "Text": "Click Me",
-    "Size": { "UDim2": [[0, 200], [0, 50]] },
-    "Position": { "UDim2": [[0.5, 0], [0.5, 0]] },
-    "AnchorPoint": [0.5, 0.5]
-  }
-}
-```
+> **CẬP NHẬT MỚI**: Tương tự như Model, toàn bộ Giao diện người dùng (ScreenGui, Frame, TextButton...) được thiết kế và lưu **trực tiếp trong Roblox Studio**. Dự án không dùng thư mục `.meta.json` để tạo UI nữa.
+- Để biết ID, tên phần tử UI (như `ActionMenu`, `HealthBar`...) và vị trí của chúng (trong `StarterGui` hay `PlayerGui`), hãy tham khảo file `aboutproject.md`.
+- Các file script UI (`.client.luau`) vẫn có thể được viết trong `src/`, và sẽ tự động gắn/hook vào UI đã có sẵn bằng code (ví dụ: `PlayerGui:WaitForChild("BattleUI")`).
 
 ---
 

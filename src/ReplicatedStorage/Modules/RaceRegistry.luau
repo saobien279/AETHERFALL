@@ -26,8 +26,8 @@ local RaceRegistry = {
 		SpawnRate = 0.60,
 		BaseStats = { STR = 2, ARC = 1, END = 1, SPD = 4, LCK = 2 }, -- [cite: 417]
 		Passives = {
-			PredatorsInstinct = { SpeedMultiplier = 1.15, CritBonus = 0.05 }, -- +15% SPD, +5% Crit [cite: 414]
-			FragileFrame = { MaxHPMultiplier = 0.85 } -- -15% Max HP [cite: 415]
+			PredatorsInstinct = { SpeedMultiplier = 1.15, LuckMultiplier = 1.05 }, -- Đã đổi CritBonus thành LuckMultiplier để đồng bộ
+            FragileFrame = { MaxHPMultiplier = 0.85 }
 		},
 		Abilities = {
 			["Prowl"] = { -- 
@@ -54,8 +54,8 @@ local RaceRegistry = {
 		SpawnRate = 0.33,
 		BaseStats = { STR = 1, ARC = 4, END = 1, SPD = 3, LCK = 1 }, -- [cite: 436]
 		Passives = {
-			AetherSpirit = { SpeedMultiplier = 1.20, MagicDamageMultiplier = 1.15 }, -- [cite: 433]
-			EtherealBody = { PhysDefMultiplier = 0.85, MaxHPMultiplier = 0.90 } -- [cite: 434]
+			AetherSpirit = { SpeedMultiplier = 1.20, ArcaneMultiplier = 1.15 }, -- Đã đổi MagicDamage thành ArcaneMultiplier
+            EtherealBody = { EnduranceMultiplier = 0.85, MaxHPMultiplier = 0.90 } -- PhysDef dựa trên END nên dùng EnduranceMultiplier
 		},
 		Abilities = {
 			["Wind's Grace"] = { -- [cite: 426]
@@ -83,8 +83,8 @@ local RaceRegistry = {
 		SpawnRate = 0.33,
 		BaseStats = { STR = 4, ARC = 1, END = 4, SPD = 0, LCK = 1 }, -- 
 		Passives = {
-			StoneSkin = { PhysDamageMultiplier = 1.20, MaxHPMultiplier = 1.15 }, -- [cite: 450]
-			Heavyweight = { SpeedMultiplier = 0.80, MagicDamageTakenMultiplier = 1.15 } -- [cite: 451, 452]
+			DarkVitality = { StrengthMultiplier = 1.15, ArcaneMultiplier = 1.15, BasicLifesteal = 0.05 }, -- Tách AllDamage thành STR và ARC
+            VoidCurse = { HealingReceivedMultiplier = 0.5, FireDamageTakenMultiplier = 1.25 }
 		},
 		Abilities = {
 			["Bloodrage"] = { -- [cite: 445]
@@ -137,8 +137,13 @@ local RaceRegistry = {
 		SpawnRate = 0.01,
 		BaseStats = { STR = 4, ARC = 3, END = 4, SPD = 1, LCK = 0 }, -- 
 		Passives = {
-			Dragonblood = { MaxHPMultiplier = 1.15, DefMultiplier = 1.15, AllDamageMultiplier = 1.25, FireImmune = true }, -- [cite: 492, 493]
-			HeavyToll = { SpeedMultiplier = 0.85, CooldownPenalty = 1 } -- +1 Cooldown [cite: 494, 495]
+			Dragonblood = { 
+                EnduranceMultiplier = 1.15, 
+                StrengthMultiplier = 1.25, 
+                ArcaneMultiplier = 1.25, 
+                FireImmune = true 
+            }, -- Tách AllDamage thành STR/ARC
+            HeavyToll = { SpeedMultiplier = 0.85, CooldownPenalty = 1 }
 		},
 		Abilities = {
 			["Dragon's Breath"] = { -- [cite: 483]

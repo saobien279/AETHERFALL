@@ -108,38 +108,49 @@ end
 
 --chua done
 function StatsCalculator.GetTotalStats(playerData, RaceRegistry)
-	local finalStats = {}
-	local raceName = playerData.Race
-	local raceData = RaceRegistry[raceName]
+    local finalStats = {}
+    local raceName = playerData.Race
+    local raceData = RaceRegistry[raceName]
 
-	local statNames = {"STR", "ARC", "END", "SPD", "LCK"}
+    if not raceData then return playerData.Stats end -- Fallback nếu không tìm thấy tộc
 
-	for _, stat in ipairs(statNames) do
-		local invested = playerData.Stats[stat] or 0
+    local statNames = {"STR", "ARC", "END", "SPD", "LCK"}
+    
+    -- Bảng ánh xạ từ viết tắt sang tên đầy đủ trong Passives
+    local shortToFull = {
+        STR = "Strength",
+        ARC = "Arcane",
+        END = "Endurance",
+        SPD = "Speed",
+        LCK = "Luck"
+    }
 
-		local base = raceData.BaseStats[stat] or 0
-		
-		local multiplier = 1
-        for passiveName, passiveEffect in pairs(raceData.Passives) do
-		-- 1. Kiểm tra buff toàn diện cho mọi chỉ số (như AllRounder)
-		if passiveEffect.StatMultiplier then
-			multiplier = multiplier * passiveEffect.StatMultiplier
-		end
-		
-		-- 2. Kiểm tra buff riêng cho từng chỉ số cụ thể
-		-- Ví dụ: Nếu đang tính "SPD", chúng ta tìm "SpeedMultiplier"
-		-- Chúng ta cần một bảng ánh xạ nhỏ: STR -> Strength, SPD -> Speed...
-		local fullStatName = (stat == "SPD" and "Speed") or (stat == "STR" and "Strength") or stat -- Tạm thời như vậy
-		local specificKey = fullStatName .. "Multiplier" 
-		
-		if passiveEffect[specificKey] then
-			multiplier = multiplier * passiveEffect[specificKey]
-		end
-	end
+    for _, stat in ipairs(statNames) do
+        local invested = playerData.Stats[stat] or 0
+        local base = raceData.BaseStats[stat] or 0
+        
+        local multiplier = 1
+        local fullStatName = shortToFull[stat]
+        local specificKey = fullStatName .. "Multiplier" 
 
-		finalStats[stat] = (base + invested) * multiplier
-	end
-	
-	return finalStats
+        -- Duyệt qua các nội tại của chủng tộc
+        for _, passiveEffect in pairs(raceData.Passives) do
+            -- 1. Buff toàn bộ chỉ số (ví dụ: AllRounder 1.05x)
+            if passiveEffect.StatMultiplier then
+                multiplier *= passiveEffect.StatMultiplier
+            end
+            
+            -- 2. Buff riêng cho chỉ số này (ví dụ: StrengthMultiplier)
+            if passiveEffect[specificKey] then
+                multiplier *= passiveEffect[specificKey]
+            end
+        end
+
+        -- Công thức: (Cơ bản + Điểm cộng thêm) * Tổng hệ số nhân
+        finalStats[stat] = (base + invested) * multiplier
+    end
+    
+    return finalStats
 end
+
 return StatsCalculator

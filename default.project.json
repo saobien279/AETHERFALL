@@ -1,9 +1,10 @@
 {
-  "name": "Learning4Chang",
+  "name": "AETHERFALL",
   "tree": {
     "$className": "DataModel",
     "Workspace": {
       "$path": "src/Workspace",
+      "$ignoreUnknownInstances": true,
       "$properties": {
         "FilteringEnabled": true
       }
@@ -16,8 +17,7 @@
       "$path": "src/ServerScriptService"
     },
     "ServerStorage": {
-      "$path": "src/ServerStorage",
-      "$ignoreUnknownInstances": true
+      "$path": "src/ServerStorage"
     },
     "StarterGui": {
       "$path": "src/StarterGui",

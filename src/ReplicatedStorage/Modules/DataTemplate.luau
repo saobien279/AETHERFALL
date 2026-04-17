@@ -37,6 +37,13 @@ local DataTemplate = {
             Combat = {
                 CurrentHP = 100,      -- Để khi thoát game vào lại vẫn giữ máu cũ
                 CurrentEnergy = 0,    -- Năng lượng tích lũy (Max 6)
+
+                ActiveCooldowns = {}, -- Chỉ lưu nếu bạn muốn Cooldown tồn tại xuyên suốt
+
+                -- Cờ hiệu quan trọng:
+                InCombat = false,       -- Đang trong trận đấu hay không?
+                CombatType = "None",    -- "Normal" hoặc "Boss"
+                LastTargetID = "",      -- ID của con quái đang đánh (để quái thường reset)
             },
 
             -- Trang bị & Túi đồ
@@ -44,7 +51,13 @@ local DataTemplate = {
                 Equipped = {
                     Weapon = "WoodenSword",
                     Armor = "TatteredClothes",
-                    Accessory = "None",
+                    Artifact = "None",
+                    Gears = {
+                        Slot1_Offensive = "None",
+                        Slot2_Defensive = "None",
+                        Slot3_Threshold = "None",
+                        Slot4_Active = "None"
+                    }
                 },
                 Items = {}, -- Danh sách ID vật phẩm người chơi sở hữu
             },

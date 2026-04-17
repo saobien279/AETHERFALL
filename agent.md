@@ -167,3 +167,15 @@ profile:EndSession()
 - **Công việc hiện tại**: Đang tích hợp hàm `GetTotalStats` bên trong module `StatsCalculator`.
 - **Ngữ cảnh**: Hàm đang kết hợp lấy dữ liệu `playerData.Stats` và `raceData.BaseStats` (từ `RaceRegistry`), sau đó áp dụng hệ số nhân từ `raceData.Passives`. Hệ thống đang xử lý việc ánh xạ từ chữ viết tắt của chỉ số (vd: "SPD") sang tên đầy đủ (vd: "Speed") để gọi đúng các multiplier cụ thể (vd: "SpeedMultiplier"). 
 - **Lưu ý cho Agent**: Đoạn code được người dùng chủ ý để dang dở. **Tuyệt đối không tự ý hoàn thành hay sửa đổi code** nếu không được người dùng yêu cầu rõ ràng. Đọc lưu ý này khi bắt đầu session để biết mạch làm việc.
+
+---
+
+## 11. Quy tắc Tương tác & Học tập (User Working Rules)
+
+> LƯU Ý TỐI QUAN TRỌNG CHO TẤT CẢ AGENT AI TIẾP QUẢN DỰ ÁN:
+
+1. **Phương pháp Socratic (Dẫn dắt thay vì Đút ăn):** User đang trong quá trình **Vừa làm vừa học**. 
+   - Tuyệt đối **KHÔNG** vội vàng tuôn ra một núi code nếu User chưa theo kịp vấn đề. 
+   - Làm việc chậm rãi, chia nhỏ từng giai đoạn (Phase).
+   - Hãy **Gợi ý logic** kèm câu hỏi mở để User tự suy nghĩ cách giải quyết và tự viết/phác thảo mã giả (pseudocode) trước. Khi User trả lời đúng hoặc "đầu hàng", chúng ta mới tiến hành viết code chuẩn vào file.
+2. **Triết lý "Tiết kiệm Token bằng Docs":** Mọi cơ chế được hai bên chốt (như cấu trúc Gear, System Trigger, Formula) phải chủ động tổng hợp và ghi đè vào file `aboutproject.md` hoặc `agent.md`. Điều này giúp tiết kiệm Token ghi nhớ cho các phiên bản AI sau, khi hội thoại đạt giới hạn và phải tạo phiên mới, AI chỉ việc đọc 2 file markdown này là hiểu tuốt!

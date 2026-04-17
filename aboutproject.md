@@ -166,3 +166,32 @@
       - ↳ `CombatEvents` (RemoteEvent) - Quản lý các event khác liên quan đến cơ chế Turn-based.
 
     *(Lưu ý của User: Các Agent KHÔNG ĐƯỢC đọc code cũ trong `TurnbaseCore.server.luau` hoặc các Remote Event liên quan trực tiếp đến `ActionMenu` hay `ActionHandle` theo yêu cầu của User trong đợt rework tiếp theo).*
+
+    ---
+
+    ## 11. Hệ thống Trang bị (Equipment & Gear Triggers)
+
+    > Hệ thống Trang bị là mảnh ghép cuối để hoàn thiện sức mạnh nhân vật, với cơ chế kích hoạt (Trigger) xử lý trong Combat Engine.
+
+    ### 11.1. Phân loại Trang bị Chính (Core Equipment)
+    | Loại | Đặc điểm / Chức năng | Cơ chế tác động |
+    |------|----------------------|-----------------|
+    | **Giáp Trụ (Armor)** | Mặc nguyên bộ (Full set), định hình lối chơi chịu đòn hoặc né tránh. | Cung cấp P.DEF và M.DEF. Giáp Nặng giảm Speed, Giáp Nhẹ tăng Tốc/Né. |
+    | **Vũ Khí (Weapon)** | Đại diện cho phương thức chiến đấu của Superclass. | Cộng thẳng vào Base Damage (Damage gốc) của kỹ năng, thêm hệ số % Buff DMG. Có nội tại riêng. |
+    | **Thánh Di Vật (Artifact)** | Món đồ quý hiếm cấp độ cổ đại. | Mở khóa các Active/Passive siêu việt mà Race/Class không có (VD: Quay ngược thời gian). |
+
+    ### 11.2. Hệ thống Phụ Kiện (4 Gear Slots) - Xử lý theo Event-Driven
+    Các slot phụ kiện không cộng thụ động vào Base Stats mà hoạt động dựa trên các khoảnh khắc (Trigger) trong trận chiến:
+
+    - **Slot 1: Offensive Trigger (Kích hoạt khi Tấn công)**
+      - **Logic Check:** Nằm trong hàm `DealDamage()`
+      - **Ví dụ:** *Lõi Nhiệt* (Bạo kích gây thêm 30% sát thương Fire), *Kiếm Cưa* (Đánh thường có 10% chảy máu).
+    - **Slot 2: Defensive Trigger (Kích hoạt khi Phòng thủ)**
+      - **Logic Check:** Nằm trong hàm `TakeDamage()` hoặc `CheckEvade()`
+      - **Ví dụ:** *Khiên Phản* (Chặn thành công phản sát thương), *Giày Lông Vũ* (Né thành công nhận vội 15% SPD lượt tới).
+    - **Slot 3: Threshold Trigger (Kích hoạt theo ngưỡng Máu/Năng lượng)**
+      - **Logic Check:** Nằm ở mọi hàm làm thay đổi HP/Energy (`OnResourceChanged()`)
+      - **Ví dụ:** *Hơi Thở Cuối* (HP < 30% tăng 50% Crit), *Ý Chí Thép* (HP 100% giảm 20% Cooldown).
+    - **Slot 4: Special Active (Kỹ năng chủ động từ Vật phẩm/Gadget)**
+      - **Logic Check:** Nằm trong khối xử lý Skill (`CanUseSkill`, `ExecuteItem`)
+      - **Ví dụ:** *Bom Khói* (Tàng hình 1 lượt cấm chỉ định), *Bình Thanh Tẩy* (Xóa toàn bộ Debuff).

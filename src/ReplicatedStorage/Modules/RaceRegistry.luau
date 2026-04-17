@@ -10,14 +10,7 @@ local RaceRegistry = {
 			Adaption = { UnlockLevel = 5, DamagePerTurn = 0.01, MaxMultiplier = 1.10 } -- [cite: 388]
 		},
 		Abilities = {
-			["Aether Strike"] = { -- [cite: 389]
-				UnlockLevel = 40,
-				Cooldown = 6,
-				BasePower = 15,
-				Scaling = { STR = 1.0, ARC = 1.0 }, -- 100% Str/Arc [cite: 390]
-				BaseMultiplier = 1.3,
-				HighHPBonus = 1.2 -- x1.2 if enemy HP > 80% [cite: 392]
-			}
+			"Aether Strike"
 		}
 	},
 
@@ -30,21 +23,8 @@ local RaceRegistry = {
             FragileFrame = { MaxHPMultiplier = 0.85 }
 		},
 		Abilities = {
-			["Prowl"] = { -- 
-				UnlockLevel = 5,
-				Cooldown = 5,
-				NextTurnMultiplier = 1.5,
-				DefensePierce = 0.25,
-				Status = "Stealth"
-			},
-			["Burst Trap"] = { -- [cite: 409]
-				UnlockLevel = 40,
-				Cooldown = 5,
-				Duration = 3,
-				BasePower = 8,
-				Scaling = { SPD = 0.8, LCK = 0.4 }, -- [cite: 410]
-				Effects = {"Fire Counter", "Blind"} -- [cite: 412]
-			}
+			"Prowl",
+			"Burst Trap"
 		}
 	},
 
@@ -58,23 +38,8 @@ local RaceRegistry = {
             EtherealBody = { EnduranceMultiplier = 0.85, MaxHPMultiplier = 0.90 } -- PhysDef dựa trên END nên dùng EnduranceMultiplier
 		},
 		Abilities = {
-			["Wind's Grace"] = { -- [cite: 426]
-				UnlockLevel = 5,
-				Cooldown = 5,
-				BasePower = 12,
-				Scaling = { ARC = 0.9 }, -- [cite: 427]
-				Status = "Stealth",
-				Duration = 1
-			},
-			["Starfall Tempest"] = { -- [cite: 429]
-				UnlockLevel = 40,
-				Cooldown = 8,
-				BasePower = 25,
-				Scaling = { ARC = 1.3 }, -- [cite: 430]
-				AoE = true,
-				StunChance = 0.20,
-				MDefShred = 0.85 -- Giảm xuống 0.85x [cite: 431]
-			}
+			"Wind's Grace",
+			"Starfall Tempest"
 		}
 	},
 
@@ -87,21 +52,8 @@ local RaceRegistry = {
             VoidCurse = { HealingReceivedMultiplier = 0.5, FireDamageTakenMultiplier = 1.25 }
 		},
 		Abilities = {
-			["Bloodrage"] = { -- [cite: 445]
-				UnlockLevel = 5,
-				BaseBuff = 1.1,
-				LowHPThreshold = 0.4,
-				LowHPBuff = 1.2 -- HP < 40% [cite: 445]
-			},
-			["Seismic Slam"] = { -- [cite: 446]
-				UnlockLevel = 40,
-				Cooldown = 7,
-				BasePower = 20,
-				Scaling = { STR = 1.0, END = 0.3 }, -- [cite: 447]
-				AoE = true,
-				Status = "Cripple",
-				SpeedDebuff = 0.8 -- Giảm còn 0.8x [cite: 448]
-			}
+			"Bloodrage",
+			"Seismic Slam"
 		}
 	},
 
@@ -115,19 +67,8 @@ local RaceRegistry = {
 			VoidCurse = { HealingReceivedMultiplier = 0.5, FireDamageTakenMultiplier = 1.25 } -- [cite: 471, 472]
 		},
 		Abilities = {
-			["Crimson Feast"] = { -- [cite: 464]
-				UnlockLevel = 5,
-				NextHitMultiplier = 1.15,
-				HealFromDamage = 0.15
-			},
-			["Void Assassination"] = { -- [cite: 465]
-				UnlockLevel = 40,
-				Cooldown = 6,
-				BasePower = 30,
-				Scaling = { STR = 1.6, ARC = 1.6 }, -- [cite: 466]
-				IgnoreShield = true,
-				DoTMultiplier = 1.25 -- x1.25 if enemy has DoT [cite: 467]
-			}
+			"Crimson Feast",
+			"Void Assassination"
 		}
 	},
 
@@ -146,24 +87,8 @@ local RaceRegistry = {
             HeavyToll = { SpeedMultiplier = 0.85, CooldownPenalty = 1 }
 		},
 		Abilities = {
-			["Dragon's Breath"] = { -- [cite: 483]
-				UnlockLevel = 10,
-				Cooldown = 8,
-				BasePower = 18,
-				Scaling = { STR = 1.0, ARC = 1.0 }, -- [cite: 484]
-				AoE = true,
-				Status = "Burn",
-				BurnDamage = 0.04 -- 4% Max HP/turn [cite: 485]
-			},
-			["Imperial Dragon Realm"] = { -- [cite: 486]
-				UnlockLevel = 40,
-				Cooldown = 15,
-				Duration = 5,
-				DamagePerTurn = 10,
-				Scaling = { ARC = 0.4 }, -- [cite: 488]
-				HealBoost = 1.2,
-				Mulligan = { HPRecover = 0.20, Status = "Immortal" } -- 
-			}
+			"Dragon's Breath",
+			"Imperial Dragon Realm"
 		}
 	}
 }

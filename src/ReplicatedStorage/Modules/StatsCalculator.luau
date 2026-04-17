@@ -94,8 +94,15 @@ function StatsCalculator.getSpeedStats(point: number)
 	}
 end
 
--- [CORE] CÔNG THỨC DAMAGE MODEL CHÍNH (Trừ trước - Nhân sau)
--- Dùng hàm này để tính sát thương cuối cùng nhận vào
+-- [CORE] TÌM SÁT THƯƠNG ĐẦU RA (Tấn công)
+-- Tính toán kết hợp giữa Skill, Vũ khí và Hệ số gốc
+function StatsCalculator.CalculateOutputDamage(skillBasePower: number, statBonus: number, weaponBase: number, weaponBuff: number): number
+    local rawDamage = ((skillBasePower + weaponBase) * (1 + statBonus)) * weaponBuff
+    return math.round(rawDamage) -- Làm tròn để tránh máu lẻ tẻ
+end
+
+-- [CORE] CÔNG THỨC DAMAGE MODEL CHÍNH (Trừ trước - Nhân sau / Phòng thủ)
+-- Dùng hàm này để tính sát thương cuối cùng nhận vào sau khi trừ giáp
 function StatsCalculator.calculateFinalDamage(incomingDamage: number, defenderDefense: number, defenderDR: number): number
 	-- Bước 1: Trừ thủ cố định
 	local postDefenseDamage = math.max(0, incomingDamage - defenderDefense)
@@ -106,7 +113,7 @@ function StatsCalculator.calculateFinalDamage(incomingDamage: number, defenderDe
 	return math.round(finalDamage)
 end
 
---chua done
+-- Lấy Tổng chỉ số sức mạnh cơ bản của nhân vật
 function StatsCalculator.GetTotalStats(playerData, RaceRegistry)
     local finalStats = {}
     local raceName = playerData.Race

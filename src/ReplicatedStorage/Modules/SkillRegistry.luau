@@ -10,6 +10,7 @@ local SkillRegistry = {
         BasePower = 20,
         Scaling = { ARC = 1.5 },
         Type = "AoE",
+        DamageType = "Magical",
         IsHeal = true,
         Description = "Hồi máu cho toàn bộ đồng đội."
     },
@@ -24,6 +25,7 @@ local SkillRegistry = {
         BasePower = 15,
         Scaling = { STR = 1.0, ARC = 1.0 },
         Type = "Single",
+        DamageType = "Physical", -- Đấm vật lý
         BaseMultiplier = 1.3,
         HighHPBonus = 1.2, -- x1.2 if enemy HP > 80%
         Description = "Cú đấm tập trung năng lượng Aether. Gây thêm sát thương nếu kẻ địch còn nhiều máu."
@@ -40,6 +42,7 @@ local SkillRegistry = {
         DefensePierce = 0.25,
         Status = "Stealth",
         Type = "Buff",
+        DamageType = "Physical",
         Description = "Tàng hình một lượt, tăng sát thương và xuyên thủng giáp vào lượt kế tiếp."
     },
     ["Burst Trap"] = {
@@ -51,6 +54,7 @@ local SkillRegistry = {
         Scaling = { SPD = 0.8, LCK = 0.4 },
         Effects = {"Fire Counter", "Blind"},
         Type = "Trap",
+        DamageType = "Magical", -- Bẫy nổ ma thuật
         Description = "Đặt bẫy nổ bằng bột lửa. Kẻ địch kích hoạt sẽ chịu mù và sát thương lửa."
     },
 
@@ -66,6 +70,7 @@ local SkillRegistry = {
         Status = "Stealth",
         Duration = 1,
         Type = "Single",
+        DamageType = "Magical", -- Nhát cắt gió ma thuật
         Description = "Lướt theo gió gây sát thương và tạm thời tàng hình."
     },
     ["Starfall Tempest"] = {
@@ -77,6 +82,7 @@ local SkillRegistry = {
         StunChance = 0.20,
         MDefShred = 0.85,
         Type = "AoE",
+        DamageType = "Magical", -- Thiên thạch tinh tú
         Description = "Triệu hồi pháp trận sao băng giáng xuống, có tỷ lệ làm choáng và trừ MDef."
     },
 
@@ -91,6 +97,7 @@ local SkillRegistry = {
         LowHPThreshold = 0.4,
         LowHPBuff = 1.2,
         Type = "Buff",
+        DamageType = "Physical", -- Huyết nộ cường hóa cơ bắp
         Description = "Kích phát huyết nộ tăng sát thương, sức mạnh nhân lên kinh khủng khi HP dưới 40%."
     },
     ["Seismic Slam"] = {
@@ -102,6 +109,7 @@ local SkillRegistry = {
         Status = "Cripple",
         SpeedDebuff = 0.8,
         Type = "AoE",
+        DamageType = "Physical", -- Dậm đất cơ bắp
         Description = "Dậm mạnh xuống đất làm đối thủ tê liệt, trừ nặng tốc độ đánh."
     },
 
@@ -115,6 +123,7 @@ local SkillRegistry = {
         NextHitMultiplier = 1.15,
         HealFromDamage = 0.15,
         Type = "Buff",
+        DamageType = "Physical", -- Lưỡi kiếm tẩm máu vật lý
         Description = "Bao phủ vũ khí bằng khí huyết, cường hóa đòn đánh tiếp theo và hút máu."
     },
     ["Void Assassination"] = {
@@ -126,6 +135,7 @@ local SkillRegistry = {
         IgnoreShield = true,
         DoTMultiplier = 1.25,
         Type = "Single",
+        DamageType = "Physical", -- Đâm thấu xương
         Description = "Ám sát từ hư không, xuyên khiên. Gây thêm rất nhiều sát thương nếu mục tiêu đang có hiệu ứng DoT."
     },
 
@@ -141,6 +151,7 @@ local SkillRegistry = {
         Status = "Burn",
         BurnDamage = 0.04,
         Type = "AoE",
+        DamageType = "Magical", -- Lửa rồng ma thuật
         Description = "Thở ra ngọn lửa chân rồng, gây Thiêu đốt mục tiêu theo 4% Max HP mỗi lượt."
     },
     ["Imperial Dragon Realm"] = {
@@ -155,6 +166,7 @@ local SkillRegistry = {
         SpecialEffect = "Mulligan",
         Mulligan = { HPRecover = 0.20, Status = "Immortal" },
         Type = "AoE",
+        DamageType = "Magical", -- Long giới ma pháp
         Description = "Mở ra long giới bảo hộ và thiêu đốt kẻ thù, cho phép hồi lại 1 lượng HP khi chí tử."
     }
 }

@@ -169,6 +169,38 @@
 
     ---
 
+    ## 12. Phân loại Loại Sát thương (Damage Types)
+    Mọi kỹ năng và đòn tấn công trong game đều được rẽ nhánh để chịu sự ảnh hưởng của chỉ số phòng thủ tương đối thông qua hệ thống `DamageType`.
+
+    ### ⚔️ Sát thương Vật lý (Physical)
+    *Đặc điểm: Bị giảm trừ triệt để bởi chỉ số T.DEF (P.DEF) từ Giáp trụ và sức chịu đựng.*
+    - **Aether Strike** (Aetherian): Dù bọc năng lượng nhưng bản chất là một cú đấm dồn lực.
+    - **Seismic Slam** (Kraghorn): Dùng sức mạnh cơ bắp thuần túy để giậm chấn động đất.
+    - **Void Assassination** (Nyxborn): Đâm từ hư không, dùng ARC dịch chuyển nhưng lưỡi dao là vật lý.
+    - **Crimson Feast** (Nyxborn) & **Bloodrage** (Kraghorn): Cường hóa thân thể/vũ khí, chém ra đòn vật lý.
+
+    ### 🔮 Sát thương Ma pháp (Magical)
+    *Đặc điểm: Bị giảm trừ bởi chỉ số Kháng Phép (M.DEF) từ Áo choàng/Phụ kiện.*
+    - **Burst Trap** (Felorian): Thuốc súng và bột lửa Aether bùng nổ, mang đặc tính nguyên tố.
+    - **Wind's Grace** (Sylvani): Nhát cắt cấu hành từ luồng gió ma thuật.
+    - **Starfall Tempest** (Sylvani): Năng lượng tinh tú gọi thiên thạch giáng xuống.
+    - **Dragon's Breath** (Drakari): Hỏa thuật từ loài rồng thuần chủng nguyên tố Fire.
+    - **Imperial Dragon Realm** (Drakari): Lãnh địa thiết lập bằng quyền năng ma pháp cổ xưa.
+
+    ---
+
+    ## 13. Cơ chế Tính Sát Thương: Dual Scale & Generic Scaling
+    
+    ### Dual Scaling (Sức mạnh Song hành)
+    Khi một kỹ năng quy định scaling dựa trên 2 chỉ số (VD: `STR = 1.6, ARC = 1.6` của Void Assassination). Hệ thống sẽ chạy công thức tính phần trăm Buff của riêng từng loại chỉ số, và so sánh. Tỷ lệ phần trăm nào quy ra con số khổng lồ hơn, sẽ được hệ thống ưu tiên lựa chọn. **Nhân vật không được cộng dồn cả 2, mà chỉ sử dụng thế mạnh lớn nhất của mình**.
+    
+    ### Generic Stat Damage Scaling (Các nhánh làm sát thương Phụ)
+    STR và ARC có chỉ số Diminishing Return chuyên sâu (Logarithm/Ngưỡng chặn). Tuy nhiên để tránh lạm phát sức mạnh khi dùng `SPD`, `LCK` hay `END` để tính sát thương thô, hệ thống thống nhất một kẹp toán học để cân bằng:
+    - 1 Điểm `SPD/LCK/END` = **Tăng 0.5% Sát Thương (0.005)**.
+    - **Ngưỡng chặn khẩn cấp (Hard Cap):** Dù cộng tới 1000 điểm, phần trăm buff cộng thêm sẽ khựng lại ở mức tối đa là **150% (1.5)** ngang với ngưỡng trần của STR.
+
+    ---
+
     ## 11. Hệ thống Trang bị (Equipment & Gear Triggers)
 
     > Hệ thống Trang bị là mảnh ghép cuối để hoàn thiện sức mạnh nhân vật, với cơ chế kích hoạt (Trigger) xử lý trong Combat Engine.

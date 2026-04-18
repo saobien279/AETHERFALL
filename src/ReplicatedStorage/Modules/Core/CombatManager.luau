@@ -1,8 +1,8 @@
 --!strict
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
-local StatsCalculator = require(ReplicatedStorage.Modules.StatsCalculator)
-local EquipmentRegistry = require(ReplicatedStorage.Modules.EquipmentRegistry)
-local SkillRegistry = require(ReplicatedStorage.Modules.SkillRegistry)
+local StatsCalculator = require(ReplicatedStorage.Modules.Utils.StatsCalculator)
+local EquipmentRegistry = require(ReplicatedStorage.Modules.Registries.EquipmentRegistry)
+local SkillRegistry = require(ReplicatedStorage.Modules.Registries.SkillRegistry)
 
 local CombatManager = {}
 

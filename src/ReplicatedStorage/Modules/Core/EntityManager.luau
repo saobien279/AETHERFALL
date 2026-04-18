@@ -1,6 +1,6 @@
 
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
-local StatsCalculator = require(ReplicatedStorage.Modules.StatsCalculator)
+local StatsCalculator = require(ReplicatedStorage.Modules.Utils.StatsCalculator)
 
 local EntityManager = {}
 

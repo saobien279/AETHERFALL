@@ -226,4 +226,100 @@
       - **Ví dụ:** *Hơi Thở Cuối* (HP < 30% tăng 50% Crit), *Ý Chí Thép* (HP 100% giảm 20% Cooldown).
     - **Slot 4: Special Active (Kỹ năng chủ động từ Vật phẩm/Gadget)**
       - **Logic Check:** Nằm trong khối xử lý Skill (`CanUseSkill`, `ExecuteItem`)
-      - **Ví dụ:** *Bom Khói* (Tàng hình 1 lượt cấm chỉ định), *Bình Thanh Tẩy* (Xóa toàn bộ Debuff).
+      - **Ví dụ:** *Bom Khói* (Tàng hình 1 lượt cấm chỉ định), *Bình Thanh Tẩy* (Xóa toàn bộ Debuff).# 🛡️ TÀI LIỆU THIẾT KẾ TRANG BỊ & PHỤ KIỆN (AETHERFALL)
+
+Tài liệu này định nghĩa mọi trang bị tồn tại trong trò chơi và là bản lề để lập trình hệ thống `EquipmentRegistry`.
+
+---
+
+## ⚔️ VŨ KHÍ (WEAPONS)
+Cấp độ **Low-Fin** là những tạo vật phổ thông, trong khi **Fin** mang dấu ấn tinh xảo của các bậc thầy Aether.
+
+| ID / Tên Vũ Khí | Series | Base DMG | Hiệu ứng (Buff) |
+|---|---|---|---|
+| `LowFinSword` (Low Fin + Tên) | Low-Fin| 7 | Không có |
+| `FinSword` (Fin + Tên) | Fin | 10 | +5% Tổng sát thương đầu ra |
+
+---
+
+## 🛡️ GIÁP TRỤ (ARMOR)
+Mặc định nguyên bộ (Full set), định hình lối chơi.
+
+| ID | Tên trang bị | Chỉ số mang lại | Lối chơi |
+|---|---|---|---|
+| `RecruitLeathers` | Giáp Da Tân Binh | 10 P.DEF / 5 M.DEF | Cân bằng, nhẹ nhàng |
+| `IronPlate` | Giáp Sắt | 20 P.DEF / 0 M.DEF | Phản vật lý cực tốt |
+| `ScholarRobe` | Áo Choàng Học Giả | 0 P.DEF / 20 M.DEF | Kháng phép tối ưu |
+| `ScoutGarb` | Y phục Thám Báo | 5 P.DEF / 5 M.DEF / +5 Speed | Ưu tiên tốc độ, né tránh |
+| `HeavyStoneMail` | Giáp Đá Nặng | 25 P.DEF / 10 M.DEF / -10 Speed | Lì lợm nhưng chậm chạp |
+
+---
+
+## 🏺 THÁNH DI VẬT (ARTIFACTS)
+Cổ vật mang quyền năng phá vỡ quy luật, thường có hồi chiêu rất dài và kích hoạt chủ động.
+
+- **Chrono-Amber** (Hổ Phách Thời Gian)
+  - *Hiệu ứng*: Quay ngược trạng thái. Hồi phục lượng HP và Mana về mức của 1 hiệp trước đó.
+  - *Hồi chiêu*: 10 lượt.
+- **Void Summoner’s Bell** (Chuông Triệu Hồi)
+  - *Hiệu ứng*: Triệu hồi 1 lính canh bóng tối mang 20% chỉ số chủ nhân, tự động tấn công kẻ thù trong 3 hiệp.
+  - *Hồi chiêu*: 12 lượt.
+- **Aurelion’s Lens** (Thấu Kính Aurelion)
+  - *Hiệu ứng*: Thấu thị điểm yếu. Đòn đánh tiếp theo chắc chắn Chí mạng và Xuyên 100% DEF/M.DEF mục tiêu.
+  - *Hồi chiêu*: 8 lượt.
+
+---
+
+## ⚙️ TRANG BỊ BỔ TRỢ (GEARS - 4 SLOTS)
+Kích hoạt tự động hoặc chủ động thông qua Combat Engine Triggers.
+
+### Slot 1: Offensive (Kích hoạt Tấn công)
+- **Whetstone** (Đá Mài): Khi Chí mạng, gây thêm sát thương vật lý bằng 30% sát thương gốc.
+- **Spark Plug** (Buggy Lửa): Đòn đánh thường có 15% tỷ lệ gây hiệu ứng [Burn] (Trừ 2% Max HP/lượt).
+
+### Slot 2: Defensive (Kích hoạt Phòng thủ)
+- **Spiked Bracers** (Vòng Gai): Bị tấn công cận chiến sẽ Phản 40% chỉ số P.DEF thành sát thương về số 0.
+- **Ghostly Veil** (Màn Sương Ma Mị): Sau khi Né tránh, nhận ngay lập tức trạng thái [Tàng Hình] (1 lượt).
+
+### Slot 3: Threshold (Kích hoạt Ngưỡng HP)
+- **Berserker’s Heart** (Tim Cuồng Chiến): HP < 30% -> Nhận +20% Sát thương và +10% Hút máu.
+- **Guardian’s Shell** (Mai Hộ Mệnh): HP > 90% (Lúc đầy máu) -> Khởi tạo với một lớp khiên ảo (Shield) = 15% Max HP.
+
+### Slot 4: Special Active (Kỹ năng Chủ động)
+- **Flash Bang** (Bom Choáng): Gây 1 DMG và làm toàn bộ kẻ địch mất lượt (Choáng). *Cooldown: 8 lượt*.
+- **Purity Flask** (Bình Thanh Tẩy): Xóa mọi Debuff, hồi phục 10% năng lượng. *Cooldown: 6 lượt*.
+# 🌀 TÀI LIỆU THIẾT KẾ HIỆU ỨNG TRẠNG THÁI (STATUS EFFECTS)
+
+## 🩸 Nhóm 1: Sát thương theo thời gian (DoT)
+*Cơ chế: Gây sát thương ở ĐẦU lượt của mục tiêu. Mỗi lượt đếm ngược trừ 1 Stack.*
+
+- **[Trúng Độc - Poison]**: 
+  - Cơ chế: Gây Sát thương Cố định. Lượng sát thương nhân lên theo tổng số Stack. (Rất nguy hiểm nếu để tích tụ lâu dài).
+- **[Cháy - Fire]**: 
+  - Cơ chế: Gây sát thương bằng 1% Max HP mỗi lượt, kẹp thêm hiệu ứng giảm 20% hiệu quả hồi máu nhận vào.
+- **[Chảy Máu - Bleed]**: 
+  - Cơ chế: Gây Sát thương Vật lý tỷ lệ thuận với % Chỉ số Tấn công (STR/Physical) của người thi triển lúc cast chiêu (Snapshot).
+
+## 📉 Nhóm 2: Bất lợi chỉ số (Debuffs)
+*Cơ chế: Stack đại diện cho số hiệp đếm ngược. Mỗi đầu lượt trừ 1 Stack.*
+
+- **[Phá Giáp - Sunder]**: Giảm 25% DEF (Phòng thủ vật lý).
+- **[Dễ Tổn Thương - Vulnerable]**: Nhận thêm 25% Sát thương từ các đòn đánh TRỰC TIẾP (Tuyệt đối không khuếch đại sát thương dạng DoT).
+- **[Mù Lòa - Blind]**: Tăng 25% tỷ lệ đánh hụt đối với mọi đòn tấn công.
+- **[Cấm Hồi Máu - Decay]**: Mọi lượng HP nhận được từ phép Hồi máu hoặc Hút máu đều bị ép về số 0.
+- **[Tê Liệt - Cripple]**: Mục tiêu Không thể trốn thoát (Flee) khỏi trận chiến, đồng thời không thể thay đổi vị trí trong đội hình.
+
+## ⛓️ Nhóm 3: Khống chế (Crowd Control)
+*Cơ chế: Stack đại diện cho số hiệp đếm ngược.*
+
+- **[Choáng - Stun]**: Bỏ qua hoàn toàn 1 lượt hành động.
+- **[Câm Lặng - Silence]**: Không thể sử dụng Kỹ năng Chủ động (Chỉ được phép Đánh thường).
+- **[Khiêu Khích - Taunt]**: Bắt buộc kẻ địch phải dùng đòn tấn công/kỹ năng nhắm vào người đã tung chiêu Khiêu khích.
+
+## 🛡️ Nhóm 4: Có lợi (Buffs) & Hiệu ứng Đặc biệt (Unique)
+- **[Giáp Ảo - Shield] (Unique)**: 
+  - Tạo lớp khiên chặn sát thương. Lượng máu của khiên Scale theo HP của người thi triển. 
+  - Quy tắc: Tồn tại tối đa 5 lượt. KHÔNG thể cộng dồn (Unstackable).
+- **[Tàng Hình - Stealth]**: Không thể bị nhắm làm mục tiêu của các đòn tấn công Đơn (Single-target). Số stack tùy class định đoạt.
+- **[Phản Đòn - Thorns]**: Trả lại 20% sát thương nhận vào từ các đòn đánh trực tiếp.
+- **[Miễn Nhiễm - Immunity]**: Khóa và vô hiệu hóa mọi nỗ lực ốp Debuff/Khống chế lên bản thân.

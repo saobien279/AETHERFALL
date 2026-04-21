@@ -3,6 +3,16 @@ local SkillRegistry = {
     -- ==========================================
     -- HỆ THỐNG KỸ NĂNG CHUNG CHƯA PHÂN LOẠI
     -- ==========================================
+    ["Normal Attack"] = {
+        UnlockLevel = 1,
+        EnergyCost = 0, -- Đánh thường thì miễn phí
+        Cooldown = 0,
+        BasePower = 5,
+        Scaling = { STR = 1.0 },
+        Type = "Single",
+        DamageType = "Physical",
+        Description = "Đòn tấn công vật lý cơ bản bằng vũ khí đánh gần."
+    },
     ["Aether Healing"] = {
         UnlockLevel = 1,
         EnergyCost = 4, 

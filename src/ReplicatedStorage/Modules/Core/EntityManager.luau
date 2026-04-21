@@ -24,18 +24,22 @@ function EntityManager.New(playerData: any, RaceRegistry: any)
     return {
         Name = playerData.Name or "Unknown",
         Race = playerData.Race,
+        -- Chìa khóa vàng: Đem theo Tủ đồ (Vũ Khí/Áo Giáp/Gears) để mang vào trận tính sát thương
+        Inventory = playerData.Inventory,
         
         -- Chỉ số sinh tồn (Động)
         MaxHP = maxHP,
         CurrentHP = maxHP,
-        Energy = 0, -- Luôn bắt đầu trận với 0 Energy
+        MaxEnergy = 6,  -- Trần nội năng
+        Energy = 0,      -- Vừa vào game cho sẵn 2 điểm làm vốn
         IsDead = false,
         
         -- Chỉ số chiến đấu (Đã qua xử lý Diminishing)
         Stats = totalStats,
         DamageReduction = endStats.DamageReduction,
         
-        -- Hệ thống hiệu ứng
+        -- Hệ thống quản lý Vòng lặp
+        ActiveCooldowns = {}, 
         StatusEffects = {} 
     }
 end

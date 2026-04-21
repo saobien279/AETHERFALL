@@ -49,8 +49,8 @@ local DataTemplate = {
             -- Trang bị & Túi đồ
             Inventory = {
                 Equipped = {
-                    Weapon = "WoodenSword",
-                    Armor = "TatteredClothes",
+                    Weapon = "LowFinSword",
+                    Armor = "RecruitLeathers",
                     Artifact = "None",
                     Gears = {
                         Slot1_Offensive = "None",

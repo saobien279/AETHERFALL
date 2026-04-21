@@ -1,6 +1,8 @@
 --!strict
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local CombatManager = require(ReplicatedStorage.Modules.Core.CombatManager)
+local SkillProcessor = require(ReplicatedStorage.Modules.SkillProcessor)
+local SkillRegistry = require(ReplicatedStorage.Modules.Registries.SkillRegistry)
 
 local TurnbaseEngine = {}
 
@@ -32,15 +34,18 @@ end
 
 -- [[ HÀM CHUYỂN TRẠNG THÁI (STATE MACHINE) ]]
 function TurnbaseEngine.SetState(battleState: any, newState: string)
+    --changing state
     battleState.CurrentState = newState
 
     if newState == TurnbaseEngine.States.ENEMY_TURN then
-        -- Hàm AI tự động đánh của quái
+        -- Chạy hàm StartTurn để Quái tự tăng Energy và xả Cooldown
+        SkillProcessor.ProcessStartTurn(battleState.Enemy)
         TurnbaseEngine.ProcessEnemyTurn(battleState)
 
     elseif newState == TurnbaseEngine.States.PLAYER_TURN then
-        -- Bật Menu UI cho người chơi chọn chiêu
-        print("Đến lượt bạn! Vui lòng chọn kỹ năng...")
+        -- Chạy hàm StartTurn để Người tự tăng Energy và xả Cooldown
+        SkillProcessor.ProcessStartTurn(battleState.Player)
+        print("Đến lượt bạn! (Năng lượng hiện tại: " .. battleState.Player.Energy .. " / " .. battleState.Player.MaxEnergy .. ")")
         
     elseif newState == TurnbaseEngine.States.VICTORY then
         print("Chiến thắng! Rơi ra Loot đồ...")
@@ -68,18 +73,31 @@ end
 
 -- [[ HÀM XỬ LÝ LƯỢT NGƯỜI CHƠI (TỪ UI GỬI VÀO) ]]
 function TurnbaseEngine.ProcessPlayerTurn(battleState, skillID: string)
+    -- 1. Triệu hồi Cảnh Sát Gác Cổng
+    local isAllowed, errMessage = SkillProcessor.CanUseSkill(battleState.Player, skillID, SkillRegistry)
+    
+    if not isAllowed then
+        -- TRẢ LỖI TRỰC TIẾP VỀ CHO SERVER ĐỂ SERVER BÁO VỀ UI!
+        return false, errMessage
+    end
+
     print("Người chơi tung đòn: " .. skillID)
     
-    -- Chuyển lệnh cho CombatManager tính sát thương
+    -- 2. Trừ Năng lượng & Cập nhật Cooldown
+    SkillProcessor.ConsumeCost(battleState.Player, skillID, SkillRegistry)
+
+    -- 3. Chuyển lệnh cho CombatManager tính sát thương
     CombatManager.DealDamage(battleState.Player, battleState.Enemy, skillID)
 
-    -- Đánh xong xem quái chết chưa
+    -- 4. Đánh xong xem quái chết chưa
     if battleState.Enemy.IsDead then
         TurnbaseEngine.SetState(battleState, TurnbaseEngine.States.VICTORY)
     else
         -- Quái chưa chết, nhường cầu dao lại cho Quái
         TurnbaseEngine.SetState(battleState, TurnbaseEngine.States.ENEMY_TURN)
     end
+    
+    return true, nil
 end
 
 return TurnbaseEngine

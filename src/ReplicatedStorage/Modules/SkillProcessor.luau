@@ -30,3 +30,37 @@ function SkillProcessor.CanUseSkill(attacker: any , Skillname: string , skillReg
     return true, nil
 end
 
+-- [[ HÀM TRỪ PHÍ VÀ LƯU NỢ COOLDOWN HẬU KỲ ]]
+function SkillProcessor.ConsumeCost(attacker: any, skillName: string, skillRegistry: any)
+    local skill = skillRegistry[skillName]
+    if not skill then return end
+
+    -- Trừ Mana
+    attacker.Energy = math.clamp(attacker.Energy - skill.EnergyCost, 0, attacker.MaxEnergy or 6)
+    
+    -- Nhét vào đầu cuốn sổ nợ Cooldown (Lưu ý: Mới đánh xong thì chờ X lượt)
+    if skill.Cooldown and skill.Cooldown > 0 then
+        attacker.ActiveCooldowns[skillName] = skill.Cooldown
+    end
+end
+
+-- [[ HÀM CẬP NHẬT ĐẦU LƯỢT (Gọi khi đến lượt của Nhân vật/Quái) ]]
+function SkillProcessor.ProcessStartTurn(entity: any)
+    -- Hồi 2 năng lượng (MP) mỗi lượt để có vốn đánh tiếp
+    entity.Energy = math.clamp(entity.Energy + 1, 0, entity.MaxEnergy or 6)
+
+    -- Trừ 1 hiệp cho toàn bộ chiêu đang dính Cooldown
+    if entity.ActiveCooldowns then
+        for sName, turnsLeft in pairs(entity.ActiveCooldowns) do
+            if turnsLeft > 0 then
+                entity.ActiveCooldowns[sName] = turnsLeft - 1
+            end
+            -- Xóa nợ nếu cấn xong
+            if entity.ActiveCooldowns[sName] <= 0 then
+                entity.ActiveCooldowns[sName] = nil
+            end
+        end
+    end
+end
+
+return SkillProcessor

@@ -178,4 +178,5 @@ profile:EndSession()
    - Tuyệt đối **KHÔNG** vội vàng tuôn ra một núi code nếu User chưa theo kịp vấn đề. 
    - Làm việc chậm rãi, chia nhỏ từng giai đoạn (Phase).
    - Hãy **Gợi ý logic** kèm câu hỏi mở để User tự suy nghĩ cách giải quyết và tự viết/phác thảo mã giả (pseudocode) trước. Khi User trả lời đúng hoặc "đầu hàng", chúng ta mới tiến hành viết code chuẩn vào file.
-2. **Triết lý "Tiết kiệm Token bằng Docs":** Mọi cơ chế được hai bên chốt (như cấu trúc Gear, System Trigger, Formula) phải chủ động tổng hợp và ghi đè vào file `aboutproject.md` hoặc `agent.md`. Điều này giúp tiết kiệm Token ghi nhớ cho các phiên bản AI sau, khi hội thoại đạt giới hạn và phải tạo phiên mới, AI chỉ việc đọc 2 file markdown này là hiểu tuốt!
+2. **Triết lý "Tiết kiệm Token bằng Docs":** Mọi cơ chế được hai bên chốt (như cấu trúc Gear, System Trigger, Formula) phải chủ động tổng hợp và ghi đè vào file `aboutproject.md` hoặc `agent.md`. Điều này giúp tiết kiệm Token ghi nhớ cho các phiên bản AI sau.
+3. **Tiết kiệm từ vựng (Concise Communication):** Trình bày thẳng vào vấn đề kỹ thuật. Hạn chế những câu chào hỏi, khen ngợi rườm rà, bay bướm hoặc lặp lại câu hỏi của người dùng để tiết kiệm tối đa Token và không gian ngữ cảnh.

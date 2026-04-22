@@ -57,10 +57,14 @@ end
 
 -- [[ HÀM XỬ LÝ LƯỢT QUÁI (AI PROCESSOR) ]]
 function TurnbaseEngine.ProcessEnemyTurn(battleState)
-    -- Demo AI quái vật đánh 1 đòn vật lý chày cối
-    print("Quái vật tung đòn!")
+    print("Quái vật bắt đầu suy nghĩ...")
     
-    -- Ở đây sau này sẽ gọi CombatManager.DealDamage(...)
+    -- Móc nối AI (Chỉ gọi khi chạy trên Máy chủ, tránh sập Client)
+    local RunService = game:GetService("RunService")
+    if RunService:IsServer() then
+        local MonsterAI = require(game:GetService("ServerScriptService").Modules.MonsterAI)
+        MonsterAI.ProcessTurn(battleState.Enemy, battleState.Player)
+    end
     
     -- Sau khi đánh xong, kiểm tra xem người chơi còn sống không
     if battleState.Player.IsDead then

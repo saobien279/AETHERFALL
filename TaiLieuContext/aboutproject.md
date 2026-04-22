@@ -156,7 +156,13 @@
     *(Chưa có thông tin - Đang chờ người dùng cung cấp)*
 
     ### 10.2. Hệ thống Model & Part - Nằm trong `Workspace`
-    *(Chưa có thông tin - Đang chờ người dùng cung cấp)*
+    **🌍 `Workspace`**:
+    - ↳ **`WildSlime`** (Model)
+      - ↳ `SlimePart` (Part)
+      - ↳ `HeathBar` (BillboardGui - Thanh máu trên đầu)
+        - ↳ `BackGroundBar` (Frame)
+          - ↳ `Bar` (Frame - Cái ruột để scale máu)
+        - ↳ `TextLabel` (Hiển thị số)
 
     ### 10.3. Hệ thống Events - Nằm trong `ReplicatedStorage`
 
@@ -323,3 +329,24 @@ Kích hoạt tự động hoặc chủ động thông qua Combat Engine Triggers
 - **[Tàng Hình - Stealth]**: Không thể bị nhắm làm mục tiêu của các đòn tấn công Đơn (Single-target). Số stack tùy class định đoạt.
 - **[Phản Đòn - Thorns]**: Trả lại 20% sát thương nhận vào từ các đòn đánh trực tiếp.
 - **[Miễn Nhiễm - Immunity]**: Khóa và vô hiệu hóa mọi nỗ lực ốp Debuff/Khống chế lên bản thân.
+
+---
+
+## 14. Trí Tuệ Nhân Tạo Quái Vật (Monster AI & Registry)
+
+Hệ thống Quái vật không sử dụng DataTemplate lưu trữ như người chơi, mà đọc từ **Từ điển Quái vật (EnemyRegistry)**. AI hiện hành đang sử dụng Kiến trúc **Mức độ 2: Trọng số (Weight-based AI)**.
+
+### Cấu trúc EnemyRegistry
+Mỗi quái vật lưu Base Stats, Inventory (Vũ khí/Áo giáp mô phỏng) và `Skillset` mang kèm trọng số rơi (Weight):
+```luau
+Skillset = {
+    {Name = "Fireball", Weight = 60},
+    {Name = "Normal Attack", Weight = 40}
+}
+```
+
+### Cơ chế MonsterAI (Xác suất Roll)
+Khi đến `ENEMY_TURN`, máy chủ nhường quyền điều khiển cho `MonsterAI.luau`. AI sẽ làm 3 việc:
+1. Tính Tổng tỷ lệ (Total Weight).
+2. Xổ số (Math.random) để bốc trúng 1 kỹ năng.
+3. Đưa cho `SkillProcessor.CanUseSkill()` xét duyệt Mana/Cooldown. Nếu kỹ năng xịt, AI tự động loại kỹ năng đó ra và quay xổ số lại từ đầu, đảm bảo không bao giờ bị đứng hình. Quái luôn có `"Normal Attack"` làm lưới an toàn.

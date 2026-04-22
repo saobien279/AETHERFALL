@@ -23,9 +23,10 @@ function EntityManager.New(playerData: any, RaceRegistry: any)
     -- 4. Trả về hồ sơ thực thể hoàn chỉnh
     return {
         Name = playerData.Name or "Unknown",
+        Type = playerData.Type or "Player", -- Mặc định là Player nếu không truyền
         Race = playerData.Race,
-        -- Chìa khóa vàng: Đem theo Tủ đồ (Vũ Khí/Áo Giáp/Gears) để mang vào trận tính sát thương
         Inventory = playerData.Inventory,
+        Skillset = playerData.Skillset or {}, -- Chỉ xài cho Quái Vật
         
         -- Chỉ số sinh tồn (Động)
         MaxHP = maxHP,

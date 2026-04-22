@@ -121,6 +121,7 @@ function StatsCalculator.GetTotalStats(playerData, RaceRegistry)
 
     if not raceData then return playerData.Stats end -- Fallback nếu không tìm thấy tộc
 
+
     local statNames = {"STR", "ARC", "END", "SPD", "LCK"}
     
     -- Bảng ánh xạ từ viết tắt sang tên đầy đủ trong Passives
@@ -156,7 +157,8 @@ function StatsCalculator.GetTotalStats(playerData, RaceRegistry)
         -- Công thức: (Cơ bản + Điểm cộng thêm) * Tổng hệ số nhân
         finalStats[stat] = (base + invested) * multiplier
     end
-    
+	
+	print(finalStats.END)
     return finalStats
 end
 

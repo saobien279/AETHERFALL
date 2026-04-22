@@ -5,6 +5,7 @@ local Players = game:GetService("Players")
 local EntityManager = require(ReplicatedStorage.Modules.Core.EntityManager)
 local TurnbaseEngine = require(ReplicatedStorage.Modules.Core.TurnbaseEngine)
 local RaceRegistry = require(ReplicatedStorage.Modules.Registries.RaceRegistry)
+local EnemyRegistry = require(ReplicatedStorage.Modules.Registries.EnemyRegistry)
 
 -- NẠP DATA BẰNG TAY Ở ĐÂY
 local ServerScriptService = game:GetService("ServerScriptService")
@@ -49,26 +50,18 @@ Players.PlayerAdded:Connect(function(player)
     -- Nếu thằng này out game trong lúc chờ thì Dẹp, không tạo trận đấu nữa.
     if not profile then return end
 
-    -- Lấy cục Ruột dữ liệu thật ra! (DataTemplate nằm trong lõi này)
-    local playerData = profile.Data
+    -- Lấy cục Ruột dữ liệu THỔNG của Account ra! 
+    local accountData = profile.Data
     
-    -- Bơm thêm cái Tên của người chơi vào để hiển thị UI
+    -- Lấy tên Slot nhân vật hiện tại (VD: "Slot1") và Trích xuất ĐÚNG dữ liệu Nhân vật đó
+    local currentSlot = accountData.AccountData.CurrentSlotIndex or "Slot1"
+    local playerData = accountData.Characters[currentSlot]
+    
+    -- Bơm thêm cái Tên thật của người chơi vào để hiển thị UI
     playerData.Name = player.Name
 
     -- Mockup (Làm giả) Dữ liệu Quái vật Rừng (Vì quái không có Save Data)
-    local dummyEnemyData = {
-        Name = "Lowly Bandit",
-        Race = "Sylvanus", 
-        Stats = { STR = 10, ARC = 0, END = 5, SPD = 8, LCK = 2 },
-        Inventory = {
-            Equipped = {
-                Weapon = "LowFinSword",
-                Armor = "RecruitLeathers",
-                Artifact = "None",
-                Gears = { Slot1_Offensive = "None", Slot2_Defensive = "None", Slot3_Threshold = "None", Slot4_Active = "None" }
-            }
-        }
-    }
+    local dummyEnemyData = EnemyRegistry.WildSlime
 
     print("--- SERVER: DỮ LIỆU ĐÃ NẠP XONG! KHỞI TẠO LỒNG BÁT GIÁC ---")
     local playerEntity = EntityManager.New(playerData, RaceRegistry)

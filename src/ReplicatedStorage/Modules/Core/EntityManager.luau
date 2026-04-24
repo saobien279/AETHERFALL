@@ -23,6 +23,7 @@ function EntityManager.New(playerData: any, RaceRegistry: any)
     -- 4. Trả về hồ sơ thực thể hoàn chỉnh
     return {
         Name = playerData.Name or "Unknown",
+        ID = playerData.ID or playerData.Name, -- Thẻ căn cước Mạng (Network ID)
         Type = playerData.Type or "Player", -- Mặc định là Player nếu không truyền
         Race = playerData.Race,
         Inventory = playerData.Inventory,

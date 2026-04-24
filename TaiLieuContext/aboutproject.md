@@ -158,6 +158,7 @@
     ### 10.2. Hệ thống Model & Part - Nằm trong `Workspace`
     **🌍 `Workspace`**:
     - ↳ **`WildSlime`** (Model)
+      - ↳ `EncounterZone` (Part - Gắn Tag `EncounterZone` trong CollectionService)
       - ↳ `SlimePart` (Part)
       - ↳ `HeathBar` (BillboardGui - Thanh máu trên đầu)
         - ↳ `BackGroundBar` (Frame)
@@ -167,9 +168,10 @@
     ### 10.3. Hệ thống Events - Nằm trong `ReplicatedStorage`
 
     **📡 `ReplicatedStorage`**:
-    - ↳ **`Events`** (Folder) - Thư mục chứa tất cả RemoteEvent dùng cho Client-Server Communication.
-      - ↳ `ActionHandle` (RemoteEvent) - Xử lý thông tin khi click vào các nút hành động (Đang chờ Rework).
-      - ↳ `CombatEvents` (RemoteEvent) - Quản lý các event khác liên quan đến cơ chế Turn-based.
+    - ↳ **`Events`** (Folder) - Thư mục chứa cáp quang nội bộ và kết nối mạng.
+      - ↳ `ActionHandle` (RemoteEvent) - Xử lý thông tin khi click vào các nút hành động.
+      - ↳ `CombatEvents` (RemoteEvent) - Mạng truyền tải thông tin giao tranh: UpdateHP, FadeToBlack, v.v.
+      - ↳ `StartEncounterEvent` (BindableEvent) - Cáp ngầm nối giữa EncounterManager và BattleServer.
 
     *(Lưu ý của User: Các Agent KHÔNG ĐƯỢC đọc code cũ trong `TurnbaseCore.server.luau` hoặc các Remote Event liên quan trực tiếp đến `ActionMenu` hay `ActionHandle` theo yêu cầu của User trong đợt rework tiếp theo).*
 
@@ -350,3 +352,17 @@ Khi đến `ENEMY_TURN`, máy chủ nhường quyền điều khiển cho `Monst
 1. Tính Tổng tỷ lệ (Total Weight).
 2. Xổ số (Math.random) để bốc trúng 1 kỹ năng.
 3. Đưa cho `SkillProcessor.CanUseSkill()` xét duyệt Mana/Cooldown. Nếu kỹ năng xịt, AI tự động loại kỹ năng đó ra và quay xổ số lại từ đầu, đảm bảo không bao giờ bị đứng hình. Quái luôn có `"Normal Attack"` làm lưới an toàn.
+
+---
+
+## 15. Hệ Thống Chạm Trán (Encounter & Battle Transition)
+Hệ thống JRPG Encounter được tối ưu hóa toàn diện bằng **`CollectionService`** để quản lý hàng nghìn quái vật.
+
+### Kiến Trúc "Đạp Mìn" (EncounterManager)
+- Quái vật mang một Part tàng hình gắn Tag `"EncounterZone"`.
+- `EncounterManager` (Server) tự động quét Tag và gắn hàm `Touched`.
+- Khi bị đạp, nó lập tức `Destroy` cục gạch, khóa chân người chơi (`WalkSpeed = 0`), và dùng `PivotTo()` kéo người chơi ra đối mặt quái vật cách 15 studs.
+
+### Cinematic Transition
+- **Máy chủ** gọi `CombatEvents:FireClient("FadeToBlack")` rồi đếm ngược `task.wait(1.5)` trước khi mở Lồng Bát Giác (`StartEncounterEvent:Fire`).
+- **Máy Client** (`CinematicUIController.client.luau`) tự động vẽ màn hình đen bằng code (`Instance.new`), kéo Rèm xuống trong 0.5s, giam ở bóng tối 0.5s, và mở rèm 0.5s. Khớp tuyệt đối với Timer của máy chủ!

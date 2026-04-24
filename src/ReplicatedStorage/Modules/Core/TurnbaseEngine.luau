@@ -29,12 +29,14 @@ function TurnbaseEngine.StartBattle(playerEntity: any, enemyEntity: any)
     print("Trận đấu bắt đầu! Kẻ thù nhảy vào tấn công trước!")
     TurnbaseEngine.SetState(battleState, TurnbaseEngine.States.ENEMY_TURN)
 
+
     return battleState
 end
 
 -- [[ HÀM CHUYỂN TRẠNG THÁI (STATE MACHINE) ]]
 function TurnbaseEngine.SetState(battleState: any, newState: string)
     --changing state
+    battleState.TurnCount += 1
     battleState.CurrentState = newState
 
     if newState == TurnbaseEngine.States.ENEMY_TURN then

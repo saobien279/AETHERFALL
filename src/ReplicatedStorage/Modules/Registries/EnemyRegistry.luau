@@ -38,7 +38,7 @@ local EnemyRegistry = {
     },
 
     ["WildSlime"] = {
-        Name = "Chất Nhầy Độc",
+        Name = "Green Slime",
         Type = "Normal",
         Race = "Aetherian", 
         Stats = { STR = 2, ARC = 15, END = 8, SPD = 5, LCK = 10 },

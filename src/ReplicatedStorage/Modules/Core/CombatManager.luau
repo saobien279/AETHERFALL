@@ -18,6 +18,14 @@ function CombatManager.UpdateHP(entity: any, amount: number)
         -- (Sau này ta có thể nhúng Slot Thánh Di Vật hồi sinh ở đây)
     end
     
+    -- Bước 3: Phát loa thông báo cho toàn Server để Client nghe thấy và kéo ống máu
+    local ReplicatedStorage = game:GetService("ReplicatedStorage")
+    local combatEvent = ReplicatedStorage:FindFirstChild("Events") and ReplicatedStorage.Events:FindFirstChild("CombatEvents")
+    if combatEvent and game:GetService("RunService"):IsServer() then
+        -- Dùng chung CombatEvents, gửi kèm nhãn "UpdateHP" và GỬI MÃ ID CỦA THỰC THỂ!
+        combatEvent:FireAllClients("UpdateHP", entity.ID, entity.CurrentHP, entity.MaxHP)
+    end
+    
     -- Trả về lượng HP thực tế đã nhảy (để lỡ dùng In ra màn hình UI)
     return entity.CurrentHP
 end

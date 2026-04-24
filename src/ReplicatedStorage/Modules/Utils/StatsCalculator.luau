@@ -158,7 +158,6 @@ function StatsCalculator.GetTotalStats(playerData, RaceRegistry)
         finalStats[stat] = (base + invested) * multiplier
     end
 	
-	print(finalStats.END)
     return finalStats
 end
 

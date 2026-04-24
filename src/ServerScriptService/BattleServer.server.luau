@@ -22,6 +22,7 @@ if not Events then
     Events.Parent = ReplicatedStorage
 end
 
+
 -- Khởi tạo tự động RemoteEvent luôn để User không phải thao tác tay trong Roblox Studio
 local ActionMenuEvent = Events:FindFirstChild("ActionMenuEvent") :: RemoteEvent
 if not ActionMenuEvent then
@@ -30,38 +31,42 @@ if not ActionMenuEvent then
     ActionMenuEvent.Parent = Events
 end
 
+-- Khởi tạo luôn BindableEvent (Cáp ngầm nội bộ Server)
+local StartEncounterEvent = Events:FindFirstChild("StartEncounterEvent") :: BindableEvent
+if not StartEncounterEvent then
+    StartEncounterEvent = Instance.new("BindableEvent")
+    StartEncounterEvent.Name = "StartEncounterEvent"
+    StartEncounterEvent.Parent = Events
+end
+
 -- =======================================
 -- BỘ NHỚ LƯU TRỮ VÀ QUẢN LÝ
 -- =======================================
 local activeBattles = {} -- Cái nhà kho lưu tất cả các quyển Sổ ghi chép trận đấu của nhiều người chơi khác nhau
 
--- Kích hoạt Trận đánh Demo ngay khi Người chơi vào game để dễ test
-Players.PlayerAdded:Connect(function(player)
-    print("--- [BATTLE SERVER] ĐANG ĐỢI DỮ LIỆU TỪ DATAMANAGER ---")
+-- Khi Bãi Mìn gọi điện báo cáo, nó sẽ gửi cho ta 2 thứ: Thằng nào đạp mìn (player) và đạp trúng con gì (enemyID)
+StartEncounterEvent.Event:Connect(function(player: Player, enemyID: string)
+    print("--- [BATTLE SERVER] ĐANG NẠP DỮ LIỆU ĐỂ ĐÁNH NHAU VỚI: " .. enemyID .. " ---")
     
-    -- VÒNG LẶP RÌNH RẬP (Cách A)
-    -- Ngồi đợi cho tới khi DataManager lấy được thông tin từ Đám mây về
-    local profile = nil
-    repeat
-        task.wait(0.5)
-        profile = DataManager.GetProfile(player)
-    until profile ~= nil or player.Parent ~= Players
-
-    -- Nếu thằng này out game trong lúc chờ thì Dẹp, không tạo trận đấu nữa.
+    -- Lấy dữ liệu người chơi từ DataManager (Hàm này đã có cache cực nhanh)
+    local profile = DataManager.GetProfile(player)
     if not profile then return end
 
-    -- Lấy cục Ruột dữ liệu THỔNG của Account ra! 
     local accountData = profile.Data
-    
-    -- Lấy tên Slot nhân vật hiện tại (VD: "Slot1") và Trích xuất ĐÚNG dữ liệu Nhân vật đó
     local currentSlot = accountData.AccountData.CurrentSlotIndex or "Slot1"
     local playerData = accountData.Characters[currentSlot]
     
-    -- Bơm thêm cái Tên thật của người chơi vào để hiển thị UI
-    playerData.Name = player.Name
+    playerData.ID = player.Name
 
-    -- Mockup (Làm giả) Dữ liệu Quái vật Rừng (Vì quái không có Save Data)
-    local dummyEnemyData = EnemyRegistry.WildSlime
+    -- Lấy dữ liệu Quái vật từ Từ điển bằng đúng cái ID mà Bãi mìn gửi sang!
+    local baseEnemyData = EnemyRegistry[enemyID]
+    if not baseEnemyData then
+        warn("[LỖI] Không tìm thấy Quái vật nào có mã: " .. enemyID .. " trong EnemyRegistry!")
+        return
+    end
+
+    local dummyEnemyData = table.clone(baseEnemyData)
+    dummyEnemyData.ID = enemyID 
 
     print("--- SERVER: DỮ LIỆU ĐÃ NẠP XONG! KHỞI TẠO LỒNG BÁT GIÁC ---")
     local playerEntity = EntityManager.New(playerData, RaceRegistry)

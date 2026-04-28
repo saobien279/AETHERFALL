@@ -161,4 +161,23 @@ function StatsCalculator.GetTotalStats(playerData, RaceRegistry)
     return finalStats
 end
 
+-- [EQUIPMENT] Tra cứu và lấy chỉ số từ Trang bị
+function StatsCalculator.GetEquipmentModifiers(playerEquipment, EquipmentRegistry)
+    local armorName = playerEquipment and playerEquipment.Armor or nil
+    local armorBuff = armorName and EquipmentRegistry.Armors[armorName] or nil
+
+    local weaponName = playerEquipment and playerEquipment.Weapon or nil
+    local weaponBuff = weaponName and EquipmentRegistry.Weapons[weaponName] or nil
+
+    local equipMods = {
+        P_DEF = armorBuff and armorBuff.P_DEF or 0,
+        M_DEF = armorBuff and armorBuff.M_DEF or 0,
+        SpeedBonus = armorBuff and armorBuff.SpeedBonus or 0,
+        WeaponBaseDamage = weaponBuff and weaponBuff.BaseDmg or 0,
+        WeaponBuffMultiplier = weaponBuff and weaponBuff.WeaponBuff or 1.0
+    }
+    
+    return equipMods
+end
+
 return StatsCalculator

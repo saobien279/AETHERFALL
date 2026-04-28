@@ -31,15 +31,15 @@ local EquipmentRegistry = {
         },
         ["IronPlate"] = {
             Type = "Armor",
-            P_DEF = 20,
-            M_DEF = 0,
+            P_DEF = 15,
+            M_DEF = 5,
             SpeedBonus = 0,
             Description = "Giáp Sắt - Chống vật lý cực tốt."
         },
         ["ScholarRobe"] = {
             Type = "Armor",
-            P_DEF = 0,
-            M_DEF = 20,
+            P_DEF = 5,
+            M_DEF = 15,
             SpeedBonus = 0,
             Description = "Áo Choàng Học Giả - Kháng phép tối ưu."
         },
@@ -47,7 +47,7 @@ local EquipmentRegistry = {
             Type = "Armor",
             P_DEF = 5,
             M_DEF = 5,
-            SpeedBonus = 5,
+            SpeedBonus = 10,
             Description = "Y phục Thám Báo - Ưu tiên tốc độ, né tránh."
         },
         ["HeavyStoneMail"] = {

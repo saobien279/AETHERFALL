@@ -1,6 +1,7 @@
 
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local StatsCalculator = require(ReplicatedStorage.Modules.Utils.StatsCalculator)
+local EquipmentRegistry = require(ReplicatedStorage.Modules.Registries.EquipmentRegistry)
 
 local EntityManager = {}
 
@@ -11,6 +12,12 @@ local EntityManager = {}
 function EntityManager.New(playerData: any, RaceRegistry: any)
     -- 1. Lấy tổng điểm chỉ số (Đã bao gồm % cộng thêm từ Race vào Point)
     local totalStats = StatsCalculator.GetTotalStats(playerData, RaceRegistry)    
+
+    -- [NEW] Lấy chỉ số từ Trang Bị và cộng dồn (như SpeedBonus)
+    local equipMods = StatsCalculator.GetEquipmentModifiers(playerData.Inventory and playerData.Inventory.Equipped, EquipmentRegistry)
+    if equipMods.SpeedBonus then
+        totalStats.SPD = (totalStats.SPD or 0) + equipMods.SpeedBonus
+    end
 
     -- 2. Tính toán các thông số phụ thuộc vào Endurance (END)
     -- endStats trả về: { MaxHPBonus = point * 15, DamageReduction = ... }
@@ -39,6 +46,12 @@ function EntityManager.New(playerData: any, RaceRegistry: any)
         -- Chỉ số chiến đấu (Đã qua xử lý Diminishing)
         Stats = totalStats,
         DamageReduction = endStats.DamageReduction,
+        
+        -- Chỉ số từ Trang Bị
+        P_DEF = equipMods.P_DEF,
+        M_DEF = equipMods.M_DEF,
+        WeaponBaseDamage = equipMods.WeaponBaseDamage,
+        WeaponBuffMultiplier = equipMods.WeaponBuffMultiplier,
         
         -- Hệ thống quản lý Vòng lặp
         ActiveCooldowns = {}, 

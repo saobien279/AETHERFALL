@@ -38,7 +38,7 @@ local DataTemplate = {
                 CurrentHP = 100,      -- Để khi thoát game vào lại vẫn giữ máu cũ
                 CurrentEnergy = 0,    -- Năng lượng tích lũy (Max 6)
 
-                ActiveCooldowns = {}, -- Chỉ lưu nếu bạn muốn Cooldown tồn tại xuyên suốt
+                --ActiveCooldowns = {}, -- Chỉ lưu nếu bạn muốn Cooldown tồn tại xuyên suốt
 
                 -- Cờ hiệu quan trọng:
                 InCombat = false,       -- Đang trong trận đấu hay không?

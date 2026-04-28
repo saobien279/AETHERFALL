@@ -36,12 +36,9 @@ function CombatManager.TakeDamage(defender: any, incomingDamage: number, damageT
     -- 1. Lấy chỉ số Giảm Sát Thương (Kỹ thuật caching: ta lấy luôn biến lưu sẵn trong thân thể lúc spawn)
     local damageReduction = defender.DamageReduction or 0
     
-    -- 2. TÌM GIÁP: Lấy ID giáp nhân vật đang mặc và tra từ điển
-    local armorID = defender.Inventory.Equipped.Armor
-    local armorData = EquipmentRegistry.Armors[armorID]
-    
-    local pDefense = armorData and armorData.P_DEF or 0
-    local mDefense = armorData and armorData.M_DEF or 0
+    -- 2. Đọc Giáp trực tiếp từ Thực Thể (Đã được nạp sẵn lúc tạo từ EntityManager)
+    local pDefense = defender.P_DEF or 0
+    local mDefense = defender.M_DEF or 0
 
     local finalDamage = 0
 
@@ -65,12 +62,9 @@ function CombatManager.DealDamage(attacker: any, defender: any, skillID: string)
     local skillData = SkillRegistry[skillID]
     if not skillData then return end
 
-    local weaponID = attacker.Inventory.Equipped.Weapon
-    local weaponData = EquipmentRegistry.Weapons[weaponID]
-
-    -- Nếu bằng 1 cách nào đó nhân vật rớt vũ khí (tay không), ta set mặc định:
-    local wBase = weaponData and weaponData.BaseDmg or 0
-    local wBuff = weaponData and weaponData.WeaponBuff or 1.0
+    -- Đọc Vũ khí trực tiếp từ Thực Thể (Đã được nạp sẵn lúc tạo từ EntityManager)
+    local wBase = attacker.WeaponBaseDamage or 0
+    local wBuff = attacker.WeaponBuffMultiplier or 1.0
 
     -- 1. Tìm loại Sát Thương như bạn thiết kế (Mặc định Physical nếu quên ghi)
     local damageType = skillData.DamageType or "Physical"
@@ -105,6 +99,69 @@ function CombatManager.DealDamage(attacker: any, defender: any, skillID: string)
 
     -- 4. Đẩy cục Damage đó vào cho Defender gánh chịu
     CombatManager.TakeDamage(defender, incomingRawDmg, damageType)
+end
+
+-- [[ HÀM QUẢN LÝ 1: GÁN HIỆU ỨNG (APPLY STATUS EFFECT) ]]
+function CombatManager.ApplyStatusEffect(entity: any, effectName: string, stacks: number?, duration: number?)
+    local StatusEffectRegistry = require(game:GetService("ReplicatedStorage").Modules.Registries.StatusEffectRegistry)
+    local effectTemplate = StatusEffectRegistry[effectName]
+    
+    -- 1. Nếu tên hiệu ứng gõ sai hoặc không có trong Registry -> Nghỉ
+    if not effectTemplate then return end
+
+    -- (TODO: Chèn logic kiểm tra Immunity (Miễn nhiễm) ở đây sau)
+
+    -- 2. Khởi tạo kho chứa bệnh án nếu entity vô tình chưa có
+    if not entity.StatusEffects then
+        entity.StatusEffects = {}
+    end
+
+    -- 3. Kiểm tra xem người này đã dính hiệu ứng này chưa
+    if entity.StatusEffects[effectName] then
+        -- TRƯỜNG HỢP A: ĐÃ DÍNH RỒI
+        
+        -- Logic riêng cho Shield: Không cộng dồn, không ghi đè. Đến trước phục vụ trước.
+        if effectName == "Shield" then
+            return -- Đang có khiên rồi thì bỏ qua luôn, không cấp khiên mới
+        end
+
+        -- Các hiệu ứng khác (Stackable): Chỉ cộng dồn số Stacks.
+        -- Theo thiết kế của bạn: Với Sunder/Poison, số Stacks chính là Thời gian tồn tại (mỗi hiệp trừ 1).
+        if stacks then
+            entity.StatusEffects[effectName].Stacks += stacks
+        end
+    else
+        -- TRƯỜNG HỢP B: CHƯA BỊ DÍNH (LẦN ĐẦU TIÊN TẠO HỒ SƠ)
+        entity.StatusEffects[effectName] = {
+            Name = effectName,
+            Stacks = stacks or 1,
+            Duration = duration or 1
+        }
+
+        -- Quan trọng: Gọi hàm OnApply trong từ điển để nó kích hoạt sửa chỉ số (ví dụ: Sunder trừ giáp ngay lập tức)
+        if effectTemplate.OnApply then
+            effectTemplate.OnApply(entity)
+        end
+    end
+end
+
+-- [[ HÀM QUẢN LÝ 2: GỠ HIỆU ỨNG (REMOVE STATUS EFFECT) ]]
+function CombatManager.RemoveStatusEffect(entity: any, effectName: string)
+    -- 1. Kiểm tra xem có đang mang bệnh án này không. Không có thì lờ đi.
+    if not entity.StatusEffects or not entity.StatusEffects[effectName] then 
+        return 
+    end
+
+    local StatusEffectRegistry = require(game:GetService("ReplicatedStorage").Modules.Registries.StatusEffectRegistry)
+    local effectTemplate = StatusEffectRegistry[effectName]
+
+    -- 2. Quan trọng: Gọi hàm OnRemove trong từ điển để nó dọn dẹp hiện trường (ví dụ: Sunder cộng trả lại giáp)
+    if effectTemplate and effectTemplate.OnRemove then
+        effectTemplate.OnRemove(entity)
+    end
+
+    -- 3. Xé bỏ tờ bệnh án
+    entity.StatusEffects[effectName] = nil
 end
 
 return CombatManager

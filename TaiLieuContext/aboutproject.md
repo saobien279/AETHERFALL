@@ -287,3 +287,30 @@ Hệ thống JRPG Encounter dùng **`CollectionService`** để quản lý hàng
 |---|---|
 | **ActionMenu** | Chứa `AttackBtn` |
 | **Heath** | Chứa `Frame` → `FillBar` |
+
+---
+
+## 14. Kiến Trúc Status Effects & Combat Hooks
+
+Hệ thống xử lý Hiệu ứng và Trang bị phụ kiện (Gears) sử dụng kiến trúc **Event-Driven (Hooks)** để loại bỏ hoàn toàn việc gọi chéo (Circular Dependency) giữa các Modules. `CombatManager` được biến thành một ổ cắm đa năng.
+
+### 14.1. Cơ chế 2 cỗ máy Hook trong `CombatManager`
+* **`RunModifierHook(entity, hookName, baseValue, context)`**: Cỗ máy "Sửa Số". Chạy qua tất cả hiệu ứng để bóp méo con số đầu vào (VD: Ép hồi máu về 0, nhân 1.25 sát thương). Trả về con số đã sửa.
+* **`RunActionHook(entity, hookName, context)`**: Cỗ máy "Thi Hành Án". Chạy qua các hiệu ứng để gom nhặt các **Bảng Lệnh** (`{Action="TakeTrueDamage", Amount=5}`) và sau đó tự thân `CombatManager` sẽ thực thi các lệnh này.
+
+### 14.2. Các điểm cắm ống (Injection Points)
+* **`UpdateHP`**: Cắm `BeforeHeal`.
+* **`TakeDamage`**: Cắm `BeforeTakeDamage` (đầu hàm) và `AfterTakeDamage` (cuối hàm, dùng để Phản đòn/Thorns).
+* **`DealDamage`**: Cắm `BeforeDealDamage` (Buff DMG trước khi chém) và `AfterDealDamage` (Dùng để Hút máu/Lifesteal).
+
+### 14.3. Quy chuẩn viết hiệu ứng trong `StatusEffectRegistry`
+Tất cả các Hook trong từ điển phải tuân thủ nghiêm ngặt 2 giao diện (Interface) này để tránh lỗi loạn tham số:
+1. **Nhóm Modifier Hook** (Nhận vào và trả ra 1 số):
+   `function(target: any, value: number, effectData: any, context: any)`
+2. **Nhóm Action Hook** (Trả về Action Table hoặc chạy ngầm):
+   `function(target: any, effectData: any, context: any)`
+
+### 14.4. Quản lý Vòng đời Hiệu ứng (Stack vs Duration)
+* **Hiệu ứng Thường (Stackable)**: Sunder, Poison... sử dụng thuộc tính `Stacks` làm "Thanh máu thời gian". Bị gán đè sẽ cộng dồn `Stacks`. Mỗi đầu hiệp sẽ tự rớt 1 Stack.
+* **Hiệu ứng Đặc biệt (Non-stackable)**: Shield, Immunity... sử dụng thuộc tính `Duration`. **Tuyệt đối không cộng dồn, không ghi đè** (Đến trước phục vụ trước - First come first served). Chỉ được cấp mới khi cái cũ đã vỡ hoặc hết hạn.
+* 2 hàm `ApplyStatusEffect` và `RemoveStatusEffect` chịu trách nhiệm cấp/xóa hồ sơ bệnh án, đồng thời kích hoạt `OnApply` và `OnRemove` (để trừ/cộng lại Giáp tĩnh).

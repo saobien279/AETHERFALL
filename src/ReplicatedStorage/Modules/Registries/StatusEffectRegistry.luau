@@ -4,10 +4,11 @@
     Chứa tất cả các hiệu ứng trạng thái trong game.
     Sử dụng kiến trúc Event-Driven (Hook) để linh hoạt xử lý mọi loại hiệu ứng.
     
-    CÁC HOOK HỖ TRỢ:
-    - Vòng đời: OnApply(target, source), OnTurnStart(target, stacks, source), OnTurnEnd(target), OnRemove(target)
-    - Sát thương: BeforeDealDamage(attacker, defender, damage), AfterDealDamage(attacker, defender, damage), BeforeTakeDamage(defender, damage), AfterTakeDamage(defender, damage, attacker)
-    - Đa dụng: BeforeHeal(target, amount), OnEvade(target)
+    CÁC HOOK HỖ TRỢ (2 Giao diện chuẩn):
+    - Modifier Hook (Sửa số, trả về number):  function(target, value, effectData, context)
+      Danh sách: BeforeHeal, BeforeTakeDamage, BeforeDealDamage
+    - Action Hook (Thi hành, trả về Action Table hoặc nil):  function(target, effectData, context)
+      Danh sách: OnApply, OnRemove, OnTurnStart, OnTurnEnd, AfterTakeDamage, AfterDealDamage
     
     LƯU Ý VỀ CODE DESIGN (Chống Circular Dependency):
     Tuyệt đối KHÔNG require() CombatManager ở trong file này để tránh lỗi module gọi chéo nhau.
@@ -25,7 +26,8 @@ StatusEffectRegistry.Poison = {
     Description = "Gây sát thương cố định mỗi đầu hiệp dựa trên số Stack.",
     
     -- Kích hoạt mỗi đầu hiệp của người bị dính
-    OnTurnStart = function(target: any, stacks: number, source: any)
+    OnTurnStart = function(target: any, effectData: any, context: any)
+        local stacks = effectData and effectData.Stacks or 1
         local damage = 5 * stacks
         
         -- Trả về lệnh để CombatManager xử lý trừ máu (Tránh gọi ngược CombatManager ở đây)
@@ -40,7 +42,7 @@ StatusEffectRegistry.Burn = {
     Type = "DoT",
     Description = "Đốt 1% Max HP mỗi đầu lượt và giảm hồi máu.",
     
-    OnTurnStart = function(target: any, stacks: number, source: any)
+    OnTurnStart = function(target: any, effectData: any, context: any)
         local damage = math.floor(target.MaxHP * 0.01)
         return {
             Action = "TakeTrueDamage",
@@ -49,8 +51,8 @@ StatusEffectRegistry.Burn = {
     end,
     
     -- Lưỡi dao thứ 2 của Burn: Cắt giảm 20% lượng hồi máu
-    BeforeHeal = function(target: any, amount: number)
-        return amount * 0.8 
+    BeforeHeal = function(target: any, value: number, effectData: any, context: any)
+        return value * 0.8 
     end
 }
 
@@ -59,21 +61,23 @@ StatusEffectRegistry.Burn = {
 -- ==========================================
 StatusEffectRegistry.Sunder = {
     Type = "Debuff",
-    Description = "Trừ 25% P_DEF. (Bị phá giáp)",
+    Description = "Trừ 25% P_DEF và M_DEF. (Bị phá giáp)",
     
-    OnApply = function(target: any)
+    OnApply = function(target: any, effectData: any, context: any)
         -- Lưu lại lượng giáp đã bị trừ vào chính entity để lúc sau trả lại cho đúng
-        target.TempSunderMemory = target.P_DEF * 0.25
-        target.P_DEF = target.P_DEF - target.TempSunderMemory
-        target.M_DEF = target.M_DEF - target.TempSunderMemory
+        target.pTempSunderMemory = target.P_DEF * 0.25
+        target.mTempSunderMemory = target.M_DEF * 0.25
+        target.P_DEF = target.P_DEF - target.pTempSunderMemory
+        target.M_DEF = target.M_DEF - target.mTempSunderMemory
     end,
     
-    OnRemove = function(target: any)
+    OnRemove = function(target: any, effectData: any, context: any)
         -- Hết hạn -> Trả lại giáp
-        if target.TempSunderMemory then
-            target.P_DEF = target.P_DEF + target.TempSunderMemory
-            target.M_DEF = target.M_DEF + target.TempSunderMemory
-            target.TempSunderMemory = nil
+        if target.pTempSunderMemory and target.mTempSunderMemory then
+            target.P_DEF = target.P_DEF + target.pTempSunderMemory
+            target.M_DEF = target.M_DEF + target.mTempSunderMemory
+            target.pTempSunderMemory = nil
+            target.mTempSunderMemory = nil
         end
     end
 }
@@ -82,9 +86,9 @@ StatusEffectRegistry.Vulnerable = {
     Type = "Debuff",
     Description = "Nhận thêm 25% sát thương từ mọi nguồn.",
     
-    BeforeTakeDamage = function(target: any, incomingDamage: number)
+    BeforeTakeDamage = function(target: any, value: number, effectData: any, context: any)
         -- Trả về lượng sát thương MỚI sau khi bị khuếch đại 25%
-        return incomingDamage * 1.25
+        return value * 1.25
     end
 }
 
@@ -92,7 +96,7 @@ StatusEffectRegistry.Decay = {
     Type = "Debuff",
     Description = "Mọi lượng hồi máu bị ép về 0.",
     
-    BeforeHeal = function(target: any, amount: number)
+    BeforeHeal = function(target: any, value: number, effectData: any, context: any)
         return 0 -- Khóa van vĩnh viễn, không cho hồi máu
     end
 }
@@ -125,7 +129,10 @@ StatusEffectRegistry.Thorns = {
     Description = "Phản 20% sát thương nhận vào.",
     
     -- Hook này chạy SAU khi người này bị trừ máu
-    AfterTakeDamage = function(target: any, damageTaken: number, attacker: any)
+    AfterTakeDamage = function(target: any, effectData: any, context: any)
+        local attacker = context and context.Attacker
+        local damageTaken = context and context.DamageTaken or 0
+        
         if attacker and attacker ~= target then
             local reflectDmg = math.floor(damageTaken * 0.2)
             

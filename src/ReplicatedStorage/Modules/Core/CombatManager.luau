@@ -1,7 +1,6 @@
 --!strict
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local StatsCalculator = require(ReplicatedStorage.Modules.Utils.StatsCalculator)
-local EquipmentRegistry = require(ReplicatedStorage.Modules.Registries.EquipmentRegistry)
 local SkillRegistry = require(ReplicatedStorage.Modules.Registries.SkillRegistry)
 
 local CombatManager = {}
@@ -9,6 +8,11 @@ local CombatManager = {}
 -- [[ HÀM LÕI 1: CẬP NHẬT MÁU (UPDATE HP) ]]
 -- Luôn thông qua hàm này thay vì tự cộng trừ máu để đảm bảo không bị kẹt lỗi máu âm
 function CombatManager.UpdateHP(entity: any, amount: number)
+    -- [HOOK INJECTION]: Xử lý tác động trước khi hồi máu (Decay, Burn)
+    if amount > 0 then
+        amount = CombatManager.RunModifierHook(entity, "BeforeHeal", amount, nil)
+    end
+
     -- Bước 1: Tính tổng máu sau khi nhận/trừ, chặn ở mức 0 và MaxHP
     entity.CurrentHP = math.clamp(entity.CurrentHP + amount, 0, entity.MaxHP)
 
@@ -18,8 +22,7 @@ function CombatManager.UpdateHP(entity: any, amount: number)
         -- (Sau này ta có thể nhúng Slot Thánh Di Vật hồi sinh ở đây)
     end
     
-    -- Bước 3: Phát loa thông báo cho toàn Server để Client nghe thấy và kéo ống máu
-    local ReplicatedStorage = game:GetService("ReplicatedStorage")
+    -- Phát loa thông báo cho toàn Server để Client nghe thấy và kéo ống máu
     local combatEvent = ReplicatedStorage:FindFirstChild("Events") and ReplicatedStorage.Events:FindFirstChild("CombatEvents")
     if combatEvent and game:GetService("RunService"):IsServer() then
         -- Dùng chung CombatEvents, gửi kèm nhãn "UpdateHP" và GỬI MÃ ID CỦA THỰC THỂ!
@@ -32,7 +35,10 @@ end
 
 -- [[ HÀM LÕI 2: CHỊU ĐÒN (TAKE DAMAGE) ]]
 -- Hàm này xử lý sát thương ập vào người, tính toán giảm trừ giáp dựa theo Phân loại Sát thương
-function CombatManager.TakeDamage(defender: any, incomingDamage: number, damageType: string)
+function CombatManager.TakeDamage(defender: any, incomingDamage: number, damageType: string, attacker: any)
+    -- [HOOK INJECTION]: Khuếch đại sát thương trước khi tính giáp (Vulnerable)
+    incomingDamage = CombatManager.RunModifierHook(defender, "BeforeTakeDamage", incomingDamage, {Attacker = attacker, DamageType = damageType})
+
     -- 1. Lấy chỉ số Giảm Sát Thương (Kỹ thuật caching: ta lấy luôn biến lưu sẵn trong thân thể lúc spawn)
     local damageReduction = defender.DamageReduction or 0
     
@@ -54,6 +60,9 @@ function CombatManager.TakeDamage(defender: any, incomingDamage: number, damageT
 
     -- 4. Trừ máu thồi!
     CombatManager.UpdateHP(defender, -finalDamage)
+    
+    -- [HOOK INJECTION]: Kích hoạt hiệu ứng trả đũa sau khi nhận sát thương (Thorns)
+    CombatManager.RunActionHook(defender, "AfterTakeDamage", {DamageTaken = finalDamage, Attacker = attacker, DamageType = damageType})
 end
 
 -- [[ HÀM LÕI 3: GÂY SÁT THƯƠNG (DEAL DAMAGE) ]]
@@ -97,8 +106,79 @@ function CombatManager.DealDamage(attacker: any, defender: any, skillID: string)
     -- 3. Đưa vào hàm tính Sát thương đầu ra của User
     local incomingRawDmg = StatsCalculator.CalculateOutputDamage(skillData.BasePower, bestStatBonus, wBase, wBuff)
 
-    -- 4. Đẩy cục Damage đó vào cho Defender gánh chịu
-    CombatManager.TakeDamage(defender, incomingRawDmg, damageType)
+    -- [HOOK INJECTION]: Nhồi thêm buff trước khi vung đòn đánh (Whetstone)
+    incomingRawDmg = CombatManager.RunModifierHook(attacker, "BeforeDealDamage", incomingRawDmg, {Defender = defender, SkillID = skillID})
+
+    -- 4. Đẩy cục Damage đó vào cho Defender gánh chịu (Gửi kèm danh tính Attacker)
+    CombatManager.TakeDamage(defender, incomingRawDmg, damageType, attacker)
+    
+    -- [HOOK INJECTION]: Kích hoạt hiệu ứng sau khi đánh trúng (Hút máu - Lifesteal)
+    CombatManager.RunActionHook(attacker, "AfterDealDamage", {Defender = defender, DamageDealt = incomingRawDmg, SkillID = skillID})
+end
+
+-- [[ HÀM CHẠY HOOK (RUN MODIFIER HOOK) ]]
+-- Cỗ máy màng lọc đa năng, chạy qua tất cả bệnh án để sửa đổi một con số (Máu, Sát thương, v.v.).
+function CombatManager.RunModifierHook(entity: any, hookName: string, baseValue: number, context: any)
+    local finalValue = baseValue
+    local StatusEffectRegistry = require(game:GetService("ReplicatedStorage").Modules.Registries.StatusEffectRegistry)
+    
+    -- 1. Quét qua các Hiệu ứng Trạng thái (Status Effects)
+    if entity.StatusEffects then
+        for effectName, effectData in pairs(entity.StatusEffects) do
+            local effectTemplate = StatusEffectRegistry[effectName]
+            
+            -- Nếu trong Registry có thiết kế trạm kiểm soát này:
+            if effectTemplate and effectTemplate[hookName] then
+                -- Đưa cục thịt (finalValue) và tờ bệnh án (effectData) vào cho hàm xào nấu
+                finalValue = effectTemplate[hookName](entity, finalValue, effectData, context)
+            end
+        end
+    end
+    
+    -- (TODO: Chúng ta sẽ thêm phần quét qua Phụ kiện (Gears) ở đây trong các bước sau)
+    
+    return finalValue
+end
+
+-- [[ HÀM CHẠY LỆNH HOOK (RUN ACTION HOOK) ]]
+-- Cỗ máy gom nhặt các Hành động phát sinh từ hiệu ứng (như trừ máu độc, phản đòn) và thi hành chúng.
+function CombatManager.RunActionHook(entity: any, hookName: string, context: any)
+    local StatusEffectRegistry = require(game:GetService("ReplicatedStorage").Modules.Registries.StatusEffectRegistry)
+    
+    -- 1. Tạo một cái giỏ rỗng để hứng các bảng lệnh
+    local actionQueue = {}
+
+    if entity.StatusEffects then
+        for effectName, effectData in pairs(entity.StatusEffects) do
+            local effectTemplate = StatusEffectRegistry[effectName]
+            
+            if effectTemplate and effectTemplate[hookName] then
+                -- Lấy cái lệnh nhả ra (Ví dụ: {Action="TakeTrueDamage", Amount=5})
+                local actionCommand = effectTemplate[hookName](entity, effectData, context)
+                
+                -- Cất lệnh vào giỏ (nếu có lệnh)
+                if actionCommand then
+                    table.insert(actionQueue, actionCommand)
+                end
+            end
+        end
+    end
+    
+    -- (TODO: Thêm vòng lặp quét Phụ kiện (Gears) ở đây sau này)
+
+    -- 2. THI HÀNH ÁN: Đọc từng Lệnh trong giỏ và ra tay
+    for _, cmd in ipairs(actionQueue) do
+        if cmd.Action == "TakeTrueDamage" then
+            -- Máu tự rút (Độc, Lửa)
+            CombatManager.UpdateHP(entity, -cmd.Amount)
+            
+        elseif cmd.Action == "ReflectDamage" and cmd.Target then
+            -- Phản đòn (Gai) -> Đánh ngược lại thằng Target
+            CombatManager.TakeDamage(cmd.Target, cmd.Amount, "TrueDamage")
+        end
+        
+        -- (Sau này nếu có Action mới như "BuffHeal" thì chỉ việc viết thêm elseif ở đây)
+    end
 end
 
 -- [[ HÀM QUẢN LÝ 1: GÁN HIỆU ỨNG (APPLY STATUS EFFECT) ]]
@@ -140,7 +220,7 @@ function CombatManager.ApplyStatusEffect(entity: any, effectName: string, stacks
 
         -- Quan trọng: Gọi hàm OnApply trong từ điển để nó kích hoạt sửa chỉ số (ví dụ: Sunder trừ giáp ngay lập tức)
         if effectTemplate.OnApply then
-            effectTemplate.OnApply(entity)
+            effectTemplate.OnApply(entity, entity.StatusEffects[effectName], nil)
         end
     end
 end
@@ -157,7 +237,7 @@ function CombatManager.RemoveStatusEffect(entity: any, effectName: string)
 
     -- 2. Quan trọng: Gọi hàm OnRemove trong từ điển để nó dọn dẹp hiện trường (ví dụ: Sunder cộng trả lại giáp)
     if effectTemplate and effectTemplate.OnRemove then
-        effectTemplate.OnRemove(entity)
+        effectTemplate.OnRemove(entity, entity.StatusEffects[effectName], nil)
     end
 
     -- 3. Xé bỏ tờ bệnh án

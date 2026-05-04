@@ -9,6 +9,7 @@ local CombatManager = {}
 -- Luôn thông qua hàm này thay vì tự cộng trừ máu để đảm bảo không bị kẹt lỗi máu âm
 function CombatManager.UpdateHP(entity: any, amount: number)
     -- [HOOK INJECTION]: Xử lý tác động trước khi hồi máu (Decay, Burn)
+
     if amount > 0 then
         amount = CombatManager.RunModifierHook(entity, "BeforeHeal", amount, nil)
     end
@@ -21,7 +22,8 @@ function CombatManager.UpdateHP(entity: any, amount: number)
         entity.IsDead = true
         -- (Sau này ta có thể nhúng Slot Thánh Di Vật hồi sinh ở đây)
     end
-    
+
+
     -- Phát loa thông báo cho toàn Server để Client nghe thấy và kéo ống máu
     local combatEvent = ReplicatedStorage:FindFirstChild("Events") and ReplicatedStorage.Events:FindFirstChild("CombatEvents")
     if combatEvent and game:GetService("RunService"):IsServer() then
@@ -59,6 +61,8 @@ function CombatManager.TakeDamage(defender: any, incomingDamage: number, damageT
     end
 
     -- 4. Trừ máu thồi!
+
+
     CombatManager.UpdateHP(defender, -finalDamage)
     
     -- [HOOK INJECTION]: Kích hoạt hiệu ứng trả đũa sau khi nhận sát thương (Thorns)
@@ -108,6 +112,8 @@ function CombatManager.DealDamage(attacker: any, defender: any, skillID: string)
 
     -- [HOOK INJECTION]: Nhồi thêm buff trước khi vung đòn đánh (Whetstone)
     incomingRawDmg = CombatManager.RunModifierHook(attacker, "BeforeDealDamage", incomingRawDmg, {Defender = defender, SkillID = skillID})
+
+
 
     -- 4. Đẩy cục Damage đó vào cho Defender gánh chịu (Gửi kèm danh tính Attacker)
     CombatManager.TakeDamage(defender, incomingRawDmg, damageType, attacker)

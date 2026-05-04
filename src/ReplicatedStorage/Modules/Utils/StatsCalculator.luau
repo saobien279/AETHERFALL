@@ -105,7 +105,8 @@ end
 -- Dùng hàm này để tính sát thương cuối cùng nhận vào sau khi trừ giáp
 function StatsCalculator.calculateFinalDamage(incomingDamage: number, defenderDefense: number, defenderDR: number): number
 	-- Bước 1: Trừ thủ cố định
-	local postDefenseDamage = math.max(0, incomingDamage - defenderDefense)
+
+	local postDefenseDamage = math.max(1, incomingDamage - defenderDefense)
 	
 	-- Bước 2: Nhân giảm % (Damage Reduction)
 	local finalDamage = postDefenseDamage * (1 - defenderDR)

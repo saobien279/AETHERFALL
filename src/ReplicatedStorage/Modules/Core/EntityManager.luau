@@ -27,6 +27,7 @@ function EntityManager.New(playerData: any, RaceRegistry: any)
     -- Vì Multiplier của tộc đã nhân vào point END trước đó, nên không nhân ở đây nữa.
     local maxHP = 100 + endStats.MaxHPBonus
 
+
     -- 4. Trả về hồ sơ thực thể hoàn chỉnh
     return {
         Name = playerData.Name or "Unknown",

@@ -72,6 +72,7 @@ StartEncounterEvent.Event:Connect(function(player: Player, enemyID: string)
     local playerEntity = EntityManager.New(playerData, RaceRegistry)
     local enemyEntity = EntityManager.New(dummyEnemyData, RaceRegistry)
 
+
     -- Mở cái Lồng bát giác ở đây, đẩy ra quyển Sổ và nhét vô Danh sách quản lý
     local battleState = TurnbaseEngine.StartBattle(playerEntity, enemyEntity)
     activeBattles[player] = battleState

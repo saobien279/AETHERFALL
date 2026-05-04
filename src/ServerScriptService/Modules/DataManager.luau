@@ -9,7 +9,7 @@ local ProfileStore = require(ServerScriptService.Modules.ProfileStore)
 local DataTemplate = require(ReplicatedStorage.Modules.Data.DataTemplate)
 
 -- Khởi tạo Kho (Store)
-local PlayerStore = ProfileStore.New("Aetherfall_Data_v1", DataTemplate)
+local PlayerStore = ProfileStore.New("Aetherfall_Data_v3", DataTemplate)
 
 -- BỘ XƯƠNG CỦA MODULE (Thư Viện Mở)
 local DataManager = {}
